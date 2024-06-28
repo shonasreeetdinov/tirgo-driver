@@ -1,0 +1,30 @@
+.dop-contact-row .input-contact {
+  display: flex;
+  width: 100%;
+}
+.dop-contact-row .input-contact span {
+  width: 80px;
+  background: #413f4f;
+  color: white;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-content: center;
+  position: absolute;
+  height: 56px;
+  border-radius: 4px 0 0 4px;
+  font-size: 13px;
+}
+.dop-contact-row .input-contact input {
+  width: 100% !important;
+  margin-bottom: 5px;
+}
+.dop-contact-row .input-contact .newPhone {
+  margin-left: 70px;
+}
+.dop-contact-row .socials button {
+  margin-right: 10px;
+}/*# sourceMappingURL=addcontact.page.css.map */

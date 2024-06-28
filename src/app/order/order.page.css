@@ -1,0 +1,35 @@
+ion-header ion-toolbar {
+  --background: var(--ion-color-primary);
+  color: white;
+}
+
+.dates-loades {
+  display: flex;
+}
+.dates-loades div {
+  font-size: 15px;
+  border-radius: 5px;
+  border: 1px solid #252333;
+  background: #252333;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.dates-loades div:first-child {
+  margin-right: 10px;
+}
+.dates-loades div:last-child {
+  margin-left: 10px;
+}
+.dates-loades .selected {
+  border: 1px solid white;
+}
+
+.accept-btn {
+  background: var(--ion-color-warning);
+  color: var(--ion-color-primary);
+}/*# sourceMappingURL=order.page.css.map */

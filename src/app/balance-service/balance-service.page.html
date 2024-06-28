@@ -1,0 +1,100 @@
+<ion-header>
+  <div class="wrapper-fluid-header">
+    <div class="logo-wrap personal-head">
+      <button class="top-back" (click)="back()"><img src="assets/img/arrow-left.svg" alt=""></button>
+      <h2>{{'Tirgo Service ' | translate}}</h2>
+      <div></div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content class="ion-no-padding ion-no-margin">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="1" pullMin="100" pullMax="200">
+    <ion-refresher-content class="loadingspinner" pullingIcon="arrow-dropdown" refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div class="body-wrap form-block">
+    <div class="autorize">
+      <p><b>Конвертер курс</b></p>
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <div class="input-with-suffix" style="position: relative;">
+          <input type="tel" #tirInput inputmode="decimal" name="tir" [(ngModel)]="data.tir"
+            (ngModelChange)="valueChanged('tir')">
+          <span class="suffix">TIR</span>
+
+        </div>
+        <span style="color: white;">=</span>
+        <div style="position: relative;">
+          <input type="tel" #amountInput inputmode="number" name="amount" [(ngModel)]="data.amount"
+            (ngModelChange)="valueChanged('amount')">
+
+        </div>
+        <select style="background: #252333;color: #fff; height: 55px; border: none; border-radius: 4px; outline: none;"
+          name="currency" [(ngModel)]="data.currencyCode" (ngModelChange)="valueChanged('tir')">
+          <option *ngFor="let currency of exchanges" [value]="currency.Code">{{currency.Ccy}}</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+  <div class="wrapper-fluid">
+    <div class="body-wrap" *ngIf="authService.currentUser">
+
+      <div class="cart-wrap">
+        <img src="assets/img/logo.png" alt="">
+        <p class="cart-wrap-balance" style="font-weight: bold;">Баланс: {{alpha_balance}} Tir <span></span></p>
+        <p class="cart-wrap-balance" style="font-weight: bold;" *ngIf="authService.currentUser.group_balance">Баланс
+          группы: {{authService.currentUser.group_balance}} Tir <span></span></p>
+      </div>
+
+      <button class="reg-btn podpis-buy" (click)="goToSupportAdmin()"
+        style="background-color: #00ABF1FF;margin: 30px 0;display: flex;align-items: center;justify-content: center;gap:10px">
+        <img src="assets/img/tg.svg" alt="">
+        <span>{{'Перейти в телеграмм для оформления' | translate}}</span>
+      </button>
+
+      <ion-accordion-group style="width: 100%;">
+        <ion-accordion value="first">
+          <ion-item slot="header" style="background-color: #1C1A28 !important; color: white;">
+            <ion-label>История оформлений услуг</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content" style="background-color: #1C1A28 !important;color: white;">
+            <div *ngFor="let item of history" class="price-card" style="display: block !important;margin: 5px 0;">
+              <div style="width: 100%;color: white; display: flex;gap:10px">
+                <span>ID заказа:</span>
+                <span>{{item.id}}</span>
+              </div>
+              <div style="width: 100%;color: white; display: flex;gap:10px">
+                <span>ID услуги:</span>
+                <span>{{item.service_id}}</span>
+              </div>
+              <div style="width: 100%;color: white; display: flex;gap:10px">
+                <span>Тип:</span>
+                <span>{{item.name}}</span>
+              </div>
+
+              <div style="width: 100%;color: white; display: flex;gap:10px">
+                <span>Сумма:</span>
+                <span>{{ item.price_uzs == 0 ? 'Бесплатно(оформление в Тирго)' : item.price_uzs
+                  | numberFormat }} <span *ngIf="item.price_uzs != 0">Tir</span>
+                </span>
+              </div>
+              <div style="width: 100%;color: white; display: flex;gap:10px">
+                <span>Дата:</span>
+                <span>{{item.createAt | date : 'dd.MM.YYYY'}} </span>
+              </div>
+            </div>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </div>
+  </div>
+</ion-content>
+
+
+<ion-card *ngIf="payConfirm">
+  <ion-card-header>
+    <ion-card-title style="text-align: center;">Ваша заявка принята на обработку</ion-card-title>
+  </ion-card-header>
+  <ion-button style="display: flex;" routerLink="/tabs">OK</ion-button>
+</ion-card>

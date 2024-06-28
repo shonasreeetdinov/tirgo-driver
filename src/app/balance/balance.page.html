@@ -1,0 +1,76 @@
+<ion-header>
+  <div class="wrapper-fluid-header">
+    <div class="logo-wrap personal-head">
+      <button class="top-back" (click)="back()"><img src="assets/img/arrow-left.svg" alt=""></button>
+      <h2>{{'Мой баланс' | translate}}</h2>
+      <div></div>
+    </div>
+  </div>
+</ion-header>
+<ion-content class="ion-no-padding ion-no-margin">
+  <div class="body-wrap form-block">
+    <div class="autorize">
+      <p><b>Конвертер курс</b></p>
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <div class="input-with-suffix" style="position: relative;">
+          <input type="tel" #tirInput inputmode="decimal" name="tir" [(ngModel)]="data.tir"
+            (ngModelChange)="valueChanged('tir')">
+          <span class="suffix">TIR</span>
+
+        </div>
+        <span style="color: white;">=</span>
+        <div style="position: relative;">
+          <input type="tel" #amountInput inputmode="number" name="amount" [(ngModel)]="data.amount"
+            (ngModelChange)="valueChanged('amount')">
+
+        </div>
+        <select style="background: #252333;color: #fff; height: 55px; border: none; border-radius: 4px; outline: none;"
+          name="currency" [(ngModel)]="data.currencyCode" (ngModelChange)="valueChanged('tir')">
+          <option *ngFor="let currency of exchanges" [value]="currency.Code">{{currency.Ccy}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrapper-fluid" style="margin-top: 20px;">
+    <div class="body-wrap" *ngIf="authService.currentUser">
+      <p class="ion-no-padding ion-no-margin"><b>{{'Методы оплаты' | translate}}</b></p>
+      <div class="payment-method">
+        <div class="payment-method-wrap">
+          <button (click)="selectmethodpay = 'click'" [ngClass]="{'selected': selectmethodpay === 'click'}"><img
+              src="assets/payment/click.svg" alt=""></button>
+          <button (click)="selectmethodpay = 'payme'" [ngClass]="{'selected': selectmethodpay === 'payme'}"><img
+              src="assets/payment/payme.svg" alt=""></button>
+        </div>
+      </div>
+      <div style="width: 100%;">
+        <p style="text-align: center; width: 100%;">{{'Подписки' | translate}}</p>
+
+        <div class="body-wrap form-block" style="width: 100%;">
+
+          <div *ngFor="let priceCard of priceCards" class="price-card" [class.active]="priceCard.selected"
+            (click)="selectPrice(priceCard)">
+            <div style="display: flex;justify-content: space-between; width: 100%;">
+              <p class="month-text">{{ priceCard.name }}</p>
+              <p class="price-text">{{ priceCard.value}} Tir</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="payment-total form-block">
+          <button class="reg-btn podpis-buy" (click)="pay()"
+            style="background-color: rgba(255, 113, 0, 1)">{{'Подключить' | translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-card *ngIf="payConfirm">
+  <ion-card-header>
+    <ion-card-title style="text-align: center;">Ваша заявка принята на обработку</ion-card-title>
+  </ion-card-header>
+
+  <ion-button style="display: flex;" routerLink="/tabs">OK</ion-button>
+
+</ion-card>

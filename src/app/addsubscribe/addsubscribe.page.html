@@ -1,0 +1,27 @@
+<div class="wrapper-fluid-header">
+  <div class="logo-wrap personal-head">
+    <button class="top-back" (click)="back()"><img src="assets/img/arrow-left.svg" alt=""></button>
+    <h2>{{'Дополнительные услуги' | translate}}</h2>
+    <div></div>
+  </div>
+</div>
+
+<ion-content>
+  <div class="wrapper-fluid ion-padding-tabs">
+    <div class="body-wrap form-block">
+
+      <div *ngFor="let priceCard of priceCards" class="price-card" [class.active]="priceCard.selected" (click)="selectPrice(priceCard)">
+        <div>
+          <div class="radio">
+            <div *ngIf="priceCard.selected"></div>
+          </div>
+        </div>
+        <div>
+          <p class="month-text">{{ priceCard.name }}</p>
+          <p class="price-text">{{ getPriceText(priceCard.value) }}</p>
+        </div>
+      </div>
+      <button (click)="addSubscription()" [disabled]="!selectedPrice || loading" *ngIf="priceCards.length" class="reg-btn" style="background-color: rgba(255, 113, 0, 1); margin-top: 20px;">{{'Подключить  ' | translate}}</button>
+    </div>
+  </div>
+</ion-content>

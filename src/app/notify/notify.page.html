@@ -1,0 +1,40 @@
+<ion-header>
+  <div class="wrapper-fluid-header">
+    <div class="logo-wrap personal-head">
+      <button class="top-back" (click)="back()"><img src="assets/img/arrow-left.svg" alt=""></button>
+      <h2>{{'Уведомления' | translate}}</h2>
+      <div></div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="authService.notifications && authService.notifications.length === 0" class="noItem">
+    <ion-icon src="assets/img/wrong.svg"></ion-icon>
+    <p>{{'К сожалению у вас нет новых уведомлений' | translate}}.</p>
+  </div>
+  <div class="wrapper-fluid">
+    <div class="body-wrap body-have-bottom-menu">
+      <div class="notice-item"
+        *ngIf="authService?.currentUser?.send_verification == 0 && authService.currentUser.driver_verification == 0">
+        <div class="notice-wrap">
+          <ion-button expand="full" (click)="goToVerification()">
+            {{'Пройти верификацию' | translate}}
+          </ion-button>
+        </div>
+      </div>
+      <div class="notice-item" *ngFor="let row of authService.notifications">
+        <p class="notece-date">{{row.date | date: 'dd MMMM YYYY  HH:mm'}}</p>
+        <div class="notice-wrap">
+          <div class="notice-row">
+            <div class="notice-excerpt">
+              <h4>{{row.header}} </h4>
+              <span>{{row.text}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ion-content>
