@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
-import { AppUpdate, AppUpdateInfo } from '@capawesome/capacitor-app-update';
+import { AppUpdate } from '@capawesome/capacitor-app-update';
 import { Browser } from '@capacitor/browser';
 
 @Injectable({
@@ -19,10 +19,6 @@ export class UpdateService {
         }
       } catch (error:any) {
         console.error('Ошибка при проверке обновлений', error);
-
-        // if (error.message.includes('ERROR_APP_NOT_OWNED')) {
-        //   this.showDownloadFromPlayStoreAlert();
-        // }
       }
     }
   }

@@ -28,9 +28,6 @@ export class OrderPage implements OnInit {
   async ngOnInit() {
     this.authService.checkGeolocation()
   }
-  // addDays(date: any, num: number) {
-  //   return formatDate(new Date(addDays(date, num).toISOString()), 'dd MMMM', 'ru');
-  // }
   async acceptOrderFinalAccept() {
     this.loadingAccept = true;
     let cityOrder = '';
@@ -64,7 +61,7 @@ export class OrderPage implements OnInit {
                 const acceptRes = await this.authService.acceptOrder(this.item.id, this.price, this.selecteddays, this.item.isMerchant).toPromise();
 
                 if (acceptRes.status) {
-                  this.authService.myorders = await this.authService.getMyOrders().toPromise();
+                  this.authService.myorders = await this.authService.getMyOrders({from:0,limit:50,transportType:''}).toPromise();
                   await this.modalController.dismiss({
                     accepted: true,
                   });
@@ -89,7 +86,6 @@ export class OrderPage implements OnInit {
         }
       })
   }
-
   async acceptOrderFinal() {
     if (this.item.secure_transaction && !this.authService.currentUser?.driver_verification && !this.authService.currentUser?.send_verification) {
       const actionSheet = await this.alertController.create({

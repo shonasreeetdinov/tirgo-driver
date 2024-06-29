@@ -145,7 +145,7 @@ export class EdittransportPage implements OnInit {
           if (res.status){
             this.loadingAddTransport = false;
             this.authService.mytruck = await this.authService.getTruck().toPromise();
-            this.authService.myorders = await this.authService.getMyOrders().toPromise();
+            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
             await this.close()
             await this.authService.alert('Отлично','Транспорт успешно изменен')
           }else {

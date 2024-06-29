@@ -16,6 +16,7 @@ import { AddtransportPage } from "../addtransport/addtransport.page";
 import { SocketService } from "../services/socket.service";
 import { Geolocation } from "@capacitor/geolocation";
 import axios from "axios";
+import { finalize } from "rxjs";
 
 @Component({
   selector: "app-home",
@@ -35,7 +36,7 @@ export class HomePage implements OnInit {
   add_two_days: boolean = false;
   dates: any[] = [];
   price: string = "";
-  selectedtruck: number = 0;
+  selectedtruck: string = '0';
   items: any[] = [];
   localItems: any[] = [];
   worldItems: any[] = [];
@@ -44,7 +45,8 @@ export class HomePage implements OnInit {
   loadingSendButton: boolean = false;
   filteredCityOut: string = "";
   myTruckTypeIds: any;
-
+  loader
+  query = { from: 0, limit: 10, transportType: '0' }
   constructor(
     public authService: AuthenticationService,
     public alertController: AlertController,
@@ -52,35 +54,59 @@ export class HomePage implements OnInit {
     private socketService: SocketService,
     private loadingCtrl: LoadingController,
     private routerOutlet: IonRouterOutlet
-  ) {}
+  ) { }
 
+  ngOnInit() {
+    this.getOrders();
+    this.routerOutlet.swipeGesture = false;
+    this.socketService.updateAllOrders().subscribe(async (res: any) => {
+      this.getOrders();
+    });
+  }
+
+  async getOrders() {
+    this.loader = await this.loadingCtrl.create({
+      message: "Загрузка заказов...",
+    });
+    await this.loader.present();
+    this.authService.getMyOrders(this.query).subscribe(
+      (res: any) => {
+        if (res) {
+          this.items = res;
+          this.loader.dismiss();
+        }
+      },
+      (error) => {
+        console.error('Error fetching orders:', error);
+        this.loader.dismiss();
+      }
+    );
+  }
+  async loadMoreOrders(event: any) {
+    this.query.from = +this.query.from + +this.query.limit
+    this.authService.getMyOrders(this.query).subscribe(
+      (res: any) => {
+        if (res && res.length > 0) {
+          this.items = [...this.items, ...res];
+          event.target.complete();
+        } else {
+          event.target.disabled = true;
+        }
+      },
+      (error) => {
+        console.error('Error fetching more orders:', error);
+        event.target.complete();
+      }
+    );
+  }
   async doRefresh(event: any) {
-    this.allTruck(this.selectedtruck);
-
-    // this.authService.myorders = await this.authService.getMyOrders().toPromise();
-    // if (this.selectedtruck > 0) {
-    //   this.allTruck(this.selectedtruck)
-    // this.items = this.authService.myorders.filter((item) => {
-    //   return +item.transport_type === +this.selectedtruck;
-    // });
-    // }
+    this.selectTypeTransport(this.selectedtruck);
     setTimeout(() => {
       event.target.complete();
-      this.filterOrderLocal();
     }, 1000);
   }
   selectType(type: string) {
     this.selectedType = type;
-    this.filterOrderLocal();
-  }
-  filterOrderLocal() {
-    for (let row of this.items) {
-      if (row.route.from_city === row.route.to_city) {
-        this.localItems.push({ id: row.id });
-      } else {
-        this.worldItems.push({ id: row.id });
-      }
-    }
   }
   localOrWorldIsset(id: number) {
     if (this.selectedType === "local") {
@@ -109,12 +135,6 @@ export class HomePage implements OnInit {
       return "Не выбрано";
     }
   }
-  async ionViewWillEnter() {
-    // this.items = this.authService.myorders;
-    this.getOrders();
-    this.filterOrderLocal();
-  }
-
   haveSameContents = (a, b) => {
     if (!a || !b) return false;
     a = a.slice(1, -1).split(",");
@@ -123,60 +143,6 @@ export class HomePage implements OnInit {
         return false;
     return true;
   };
-
-  getOrders() {
-    if (this.selectedtruck == 0) {
-      this.allTruck(0);
-    } else {
-      this.authService.getTruck().subscribe((res: any) => {
-        this.myTruckTypeIds = res.map((el: any) => el.type);
-        this.authService.getMyOrders().subscribe((order: any) => {
-          this.items = order.filter((el: any) =>
-            this.haveSameContents(el.transport_types, [this.selectedtruck])
-          );
-          this.items = this.items.sort(function (a, b) {
-            return (
-              Number(new Date(a.date_create)) - Number(new Date(b.date_create))
-            );
-          });
-          // date_create
-          this.items.forEach((v, k) => {
-            // v.transport_types = JSON.parse(v.transport_types)
-          });
-        });
-      });
-    }
-  }
-
-  ngOnInit() {
-    this.getOrders();
-    this.routerOutlet.swipeGesture = false;
-    this.socketService.updateAllOrders().subscribe(async (res: any) => {
-      for (let row of this.authService.myorders) {
-        const index = this.authService.myorders.findIndex(
-          (e) => e.id === row.id && row.status !== 2
-        );
-        if (index >= 0) {
-          const indexuser = this.authService.myorders[
-            index
-          ].orders_accepted.findIndex(
-            (user: {
-              status_order: Boolean | undefined;
-              id: number | undefined;
-            }) =>
-              user.id === this.authService.currentUser?.id && user.status_order
-          );
-          if (indexuser >= 0) {
-            this.authService.activeorder = this.authService.myorders[index];
-            this.authService.myorders.splice(index, 1);
-          }
-        }
-      }
-      // this.items = this.authService.myorders;
-      this.getOrders();
-    });
-    this.filterOrderLocal();
-  }
   viewOrderInfo(id: number) {
     if (this.vieworder === id) {
       this.vieworder = 0;
@@ -203,7 +169,7 @@ export class HomePage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data && data.accepted) {
       this.authService.myorders = await this.authService
-        .getMyOrders()
+        .getMyOrders({})
         .toPromise();
       // this.items = this.authService.myorders;
       this.getOrders();
@@ -303,7 +269,6 @@ export class HomePage implements OnInit {
       this.dates.splice(index, 1);
     }
   }
-
   async sendAcceptOrder() {
     this.loadingSendButton = true;
     this.loading = await this.loadingCtrl.create({
@@ -379,7 +344,7 @@ export class HomePage implements OnInit {
         {
           text: "Да",
           handler: async () => {
-            if(item.isMerchant)
+            if (item.isMerchant)
               item.id = item.id.split("M")[1];
             const res = await this.authService.cancelOrder(item).toPromise();
             if (res.status) {
@@ -409,21 +374,10 @@ export class HomePage implements OnInit {
     if (data) {
     }
   }
-  allTruck(id: number) {
+  selectTypeTransport(id: string) {
     this.selectedtruck = id;
-    if (this.selectedtruck > 0) {
-      this.getOrders();
-      this.items = this.items.filter((item) => {
-        return +item.transport_type === +this.selectedtruck;
-      });
-    } else {
-      this.authService.getMyOrders().subscribe((order: any) => {
-        this.items = order;
-        this.items.forEach((v, k) => {
-          // v.transport_types = JSON.parse(v.transport_types)
-        });
-      });
-    }
+    this.query = {from: 0, limit: 10, transportType: id};
+    this.getOrders();
   }
   filterOrders() {
     this.getOrders();
@@ -435,7 +389,6 @@ export class HomePage implements OnInit {
     this.filter = false;
   }
   filterClose() {
-    // this.items = this.authService.myorders;
     this.getOrders();
     this.filter = false;
   }
