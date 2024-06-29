@@ -7,5 +7,6 @@ export const environment = {
     storageBucket: "tirgo-log.appspot.com",
     messagingSenderId: "60927635338",
     appId: "1:60927635338:android:865fd6350dcd7ccd62a273",
+    measurementId: "G-XXXXXXX"
   }
 };

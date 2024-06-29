@@ -7,7 +7,6 @@ import { AuthenticationService } from "./services/authentication.service";
 import { Geolocation } from '@capacitor/geolocation';
 import { TranslateService } from "@ngx-translate/core";
 import { User } from "./user";
-import { PushService } from "./services/push.service";
 import { SocketService } from "./services/socket.service";
 import { Network } from "@capacitor/network";
 import axios from 'axios';
@@ -22,6 +21,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+
   constructor(
     private platform: Platform,
     private socketService: SocketService,
@@ -80,41 +80,39 @@ export class AppComponent {
           this.authService.typecargo = await this.authService.getTypeCargo().toPromise();
           this.authService.mytruck = await this.authService.getTruck().toPromise();
           this.authService.contacts = await this.authService.getContacts().toPromise();
-          this.authService.myorders = await this.authService.getMyOrders().toPromise();
-          this.authService.getMyOrders().subscribe((res: any) => {
-            this.authService.myAllorders = res
-          })
+          this.authService.myorders = await this.authService.getMyOrders({from:0,limit:50,transportType:''}).toPromise();
           this.authService.myarchiveorders = await this.authService.getMyArchiveOrders().toPromise();
           this.authService.currency = await this.authService.getCurrency().toPromise();
           this.authService.statuses = await this.authService.getStatuses().toPromise();
-          for (let row of this.authService.myorders) {
-            const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
-            if (index >= 0) {
-              const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
-                status_order: number | undefined;
-                id: number | undefined;
-              }) => user.id === this.authService.currentUser?.id && user.status_order === 1)
-              if (indexuser >= 0) {
-                this.authService.activeorder = this.authService.myorders[index];
-                this.authService.myorders.splice(index, 1)
-              }
-            }
-          }
+          // for (let row of this.authService.myorders) {
+          //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
+          //   if (index >= 0) {
+          //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
+          //       status_order: number | undefined;
+          //       id: number | undefined;
+          //     }) => user.id === this.authService.currentUser?.id && user.status_order === 1)
+          //     if (indexuser >= 0) {
+          //       this.authService.activeorder = this.authService.myorders[index];
+          //       this.authService.myorders.splice(index, 1)
+          //     }
+          //   }
+          // }
           this.socketService.updateAllOrders().subscribe(async (res: any) => {
-            this.authService.myorders = await this.authService.getMyOrders().toPromise();
-            for (let row of this.authService.myorders) {
-              const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
-              if (index >= 0) {
-                const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
-                  status_order: number | undefined;
-                  user_id: number | undefined;
-                }) => user.user_id === this.authService.currentUser?.id && user.status_order === 1)
-                if (indexuser >= 0) {
-                  this.authService.activeorder = this.authService.myorders[index];
-                  this.authService.myorders.splice(index, 1)
-                }
-              }
-            }
+            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
+
+            // for (let row of this.authService.myorders) {
+            //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
+            //   if (index >= 0) {
+            //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
+            //       status_order: number | undefined;
+            //       user_id: number | undefined;
+            //     }) => user.user_id === this.authService.currentUser?.id && user.status_order === 1)
+            //     if (indexuser >= 0) {
+            //       this.authService.activeorder = this.authService.myorders[index];
+            //       this.authService.myorders.splice(index, 1)
+            //     }
+            //   }
+            // }
             await this.checkSession();
           });
           this.authService.notifications = await this.authService.getNotification().toPromise();
@@ -155,8 +153,8 @@ export class AppComponent {
   async initializeApp() {
     if (this.platform.is('ios') || this.platform.is('android')) {
       this.platform.ready().then(() => {
-         FirebaseAnalytics.initializeFirebase(environment.firebase)
-         FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
+        // FirebaseAnalytics.initializeFirebase(environment.firebase)
+        // FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
 
         this.updateService.checkForUpdates();
 

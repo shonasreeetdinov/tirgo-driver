@@ -74,13 +74,14 @@ var HomePage = /** @class */ (function () {
         this.add_two_days = false;
         this.dates = [];
         this.price = "";
-        this.selectedtruck = 0;
+        this.selectedtruck = '0';
         this.items = [];
         this.localItems = [];
         this.worldItems = [];
         this.selectedType = "world";
         this.loadingSendButton = false;
         this.filteredCityOut = "";
+        this.query = { from: 0, limit: 10, transportType: '0' };
         this.haveSameContents = function (a, b) {
             if (!a || !b)
                 return false;
@@ -98,21 +99,74 @@ var HomePage = /** @class */ (function () {
             return true;
         };
     }
-    HomePage.prototype.doRefresh = function (event) {
+    HomePage.prototype.ngOnInit = function () {
+        var _this = this;
+        this.getOrders();
+        this.routerOutlet.swipeGesture = false;
+        this.socketService.updateAllOrders().subscribe(function (res) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.getOrders();
+                return [2 /*return*/];
+            });
+        }); });
+    };
+    HomePage.prototype.getOrders = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, this.loadingCtrl.create({
+                                message: "Загрузка заказов..."
+                            })];
+                    case 1:
+                        _a.loader = _b.sent();
+                        return [4 /*yield*/, this.loader.present()];
+                    case 2:
+                        _b.sent();
+                        this.authService.getMyOrders(this.query).subscribe(function (res) {
+                            if (res) {
+                                _this.items = res;
+                                _this.loader.dismiss();
+                            }
+                        }, function (error) {
+                            console.error('Error fetching orders:', error);
+                            _this.loader.dismiss();
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    HomePage.prototype.loadMoreOrders = function (event) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.allTruck(this.selectedtruck);
-                // this.authService.myorders = await this.authService.getMyOrders().toPromise();
-                // if (this.selectedtruck > 0) {
-                //   this.allTruck(this.selectedtruck)
-                // this.items = this.authService.myorders.filter((item) => {
-                //   return +item.transport_type === +this.selectedtruck;
-                // });
-                // }
+                this.query.from = +this.query.from + +this.query.limit;
+                this.authService.getMyOrders(this.query).subscribe(function (res) {
+                    if (res && res.length > 0) {
+                        _this.items = __spreadArrays(_this.items, res);
+                        event.target.complete();
+                    }
+                    else {
+                        event.target.disabled = true;
+                    }
+                }, function (error) {
+                    console.error('Error fetching more orders:', error);
+                    event.target.complete();
+                });
+                return [2 /*return*/];
+            });
+        });
+    };
+    HomePage.prototype.doRefresh = function (event) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.selectTypeTransport(this.selectedtruck);
                 setTimeout(function () {
                     event.target.complete();
-                    _this.filterOrderLocal();
                 }, 1000);
                 return [2 /*return*/];
             });
@@ -120,18 +174,6 @@ var HomePage = /** @class */ (function () {
     };
     HomePage.prototype.selectType = function (type) {
         this.selectedType = type;
-        this.filterOrderLocal();
-    };
-    HomePage.prototype.filterOrderLocal = function () {
-        for (var _i = 0, _a = this.items; _i < _a.length; _i++) {
-            var row = _a[_i];
-            if (row.route.from_city === row.route.to_city) {
-                this.localItems.push({ id: row.id });
-            }
-            else {
-                this.worldItems.push({ id: row.id });
-            }
-        }
     };
     HomePage.prototype.localOrWorldIsset = function (id) {
         if (this.selectedType === "local") {
@@ -163,69 +205,6 @@ var HomePage = /** @class */ (function () {
         else {
             return "Не выбрано";
         }
-    };
-    HomePage.prototype.ionViewWillEnter = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                // this.items = this.authService.myorders;
-                this.getOrders();
-                this.filterOrderLocal();
-                return [2 /*return*/];
-            });
-        });
-    };
-    HomePage.prototype.getOrders = function () {
-        var _this = this;
-        if (this.selectedtruck == 0) {
-            this.allTruck(0);
-        }
-        else {
-            this.authService.getTruck().subscribe(function (res) {
-                _this.myTruckTypeIds = res.map(function (el) { return el.type; });
-                _this.authService.getMyOrders().subscribe(function (order) {
-                    _this.items = order.filter(function (el) {
-                        return _this.haveSameContents(el.transport_types, [_this.selectedtruck]);
-                    });
-                    _this.items = _this.items.sort(function (a, b) {
-                        return (Number(new Date(a.date_create)) - Number(new Date(b.date_create)));
-                    });
-                    // date_create
-                    _this.items.forEach(function (v, k) {
-                        // v.transport_types = JSON.parse(v.transport_types)
-                    });
-                });
-            });
-        }
-    };
-    HomePage.prototype.ngOnInit = function () {
-        var _this = this;
-        this.getOrders();
-        this.routerOutlet.swipeGesture = false;
-        this.socketService.updateAllOrders().subscribe(function (res) { return __awaiter(_this, void 0, void 0, function () {
-            var _loop_2, this_1, _i, _a, row;
-            var _this = this;
-            return __generator(this, function (_b) {
-                _loop_2 = function (row) {
-                    var index = this_1.authService.myorders.findIndex(function (e) { return e.id === row.id && row.status !== 2; });
-                    if (index >= 0) {
-                        var indexuser = this_1.authService.myorders[index].orders_accepted.findIndex(function (user) { var _a; return user.id === ((_a = _this.authService.currentUser) === null || _a === void 0 ? void 0 : _a.id) && user.status_order; });
-                        if (indexuser >= 0) {
-                            this_1.authService.activeorder = this_1.authService.myorders[index];
-                            this_1.authService.myorders.splice(index, 1);
-                        }
-                    }
-                };
-                this_1 = this;
-                for (_i = 0, _a = this.authService.myorders; _i < _a.length; _i++) {
-                    row = _a[_i];
-                    _loop_2(row);
-                }
-                // this.items = this.authService.myorders;
-                this.getOrders();
-                return [2 /*return*/];
-            });
-        }); });
-        this.filterOrderLocal();
     };
     HomePage.prototype.viewOrderInfo = function (id) {
         if (this.vieworder === id) {
@@ -269,7 +248,7 @@ var HomePage = /** @class */ (function () {
                         if (!(data && data.accepted)) return [3 /*break*/, 6];
                         _d = this.authService;
                         return [4 /*yield*/, this.authService
-                                .getMyOrders()
+                                .getMyOrders({})
                                 .toPromise()];
                     case 5:
                         _d.myorders = _e.sent();
@@ -535,23 +514,10 @@ var HomePage = /** @class */ (function () {
             });
         });
     };
-    HomePage.prototype.allTruck = function (id) {
-        var _this = this;
+    HomePage.prototype.selectTypeTransport = function (id) {
         this.selectedtruck = id;
-        if (this.selectedtruck > 0) {
-            this.getOrders();
-            this.items = this.items.filter(function (item) {
-                return +item.transport_type === +_this.selectedtruck;
-            });
-        }
-        else {
-            this.authService.getMyOrders().subscribe(function (order) {
-                _this.items = order;
-                _this.items.forEach(function (v, k) {
-                    // v.transport_types = JSON.parse(v.transport_types)
-                });
-            });
-        }
+        this.query = { from: 0, limit: 10, transportType: id };
+        this.getOrders();
     };
     HomePage.prototype.filterOrders = function () {
         var _this = this;
@@ -564,7 +530,6 @@ var HomePage = /** @class */ (function () {
         this.filter = false;
     };
     HomePage.prototype.filterClose = function () {
-        // this.items = this.authService.myorders;
         this.getOrders();
         this.filter = false;
     };

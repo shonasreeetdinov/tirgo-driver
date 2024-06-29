@@ -157,7 +157,7 @@ export class AddtransportPage implements OnInit {
         .then(async (res: any) => {
           if (res.status) {
             this.authService.mytruck = await this.authService.getTruck().toPromise();
-            this.authService.myorders = await this.authService.getMyOrders().toPromise();
+            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
             await this.close()
             await this.authService.alert('Отлично', 'Транспорт успешно добавлен')
           }

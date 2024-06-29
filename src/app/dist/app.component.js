@@ -48,8 +48,6 @@ var geolocation_1 = require("@capacitor/geolocation");
 var user_1 = require("./user");
 var network_1 = require("@capacitor/network");
 var axios_1 = require("axios");
-var firebase_analytics_1 = require("@capacitor-community/firebase-analytics");
-var environment_1 = require("src/environments/environment");
 var AppComponent = /** @class */ (function () {
     function AppComponent(platform, socketService, themeService, authService, storage, translateService, alertController, router, fcm, updateService) {
         var _this = this;
@@ -128,10 +126,10 @@ var AppComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.authService.checkSession().toPromise().then(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                            var _a, _b, _c, _d, _e, _f, _g, _h, _loop_1, this_1, _i, _j, row, _k, _l;
+                            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
                             var _this = this;
-                            return __generator(this, function (_m) {
-                                switch (_m.label) {
+                            return __generator(this, function (_l) {
+                                switch (_l.label) {
                                     case 0:
                                         if (!res.status) return [3 /*break*/, 15];
                                         this.authService.currentUser = new user_1.User(res.user);
@@ -144,93 +142,95 @@ var AppComponent = /** @class */ (function () {
                                         _a = this.authService;
                                         return [4 /*yield*/, this.authService.getTypeTruck().toPromise()];
                                     case 1:
-                                        _a.typetruck = _m.sent();
+                                        _a.typetruck = _l.sent();
                                         _b = this.authService;
                                         return [4 /*yield*/, this.authService.getTypeCargo().toPromise()];
                                     case 2:
-                                        _b.typecargo = _m.sent();
+                                        _b.typecargo = _l.sent();
                                         _c = this.authService;
                                         return [4 /*yield*/, this.authService.getTruck().toPromise()];
                                     case 3:
-                                        _c.mytruck = _m.sent();
+                                        _c.mytruck = _l.sent();
                                         _d = this.authService;
                                         return [4 /*yield*/, this.authService.getContacts().toPromise()];
                                     case 4:
-                                        _d.contacts = _m.sent();
+                                        _d.contacts = _l.sent();
                                         _e = this.authService;
-                                        return [4 /*yield*/, this.authService.getMyOrders().toPromise()];
+                                        return [4 /*yield*/, this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise()];
                                     case 5:
-                                        _e.myorders = _m.sent();
-                                        this.authService.getMyOrders().subscribe(function (res) {
-                                            _this.authService.myAllorders = res;
-                                        });
+                                        _e.myorders = _l.sent();
                                         _f = this.authService;
                                         return [4 /*yield*/, this.authService.getMyArchiveOrders().toPromise()];
                                     case 6:
-                                        _f.myarchiveorders = _m.sent();
+                                        _f.myarchiveorders = _l.sent();
                                         _g = this.authService;
                                         return [4 /*yield*/, this.authService.getCurrency().toPromise()];
                                     case 7:
-                                        _g.currency = _m.sent();
+                                        _g.currency = _l.sent();
                                         _h = this.authService;
                                         return [4 /*yield*/, this.authService.getStatuses().toPromise()];
                                     case 8:
-                                        _h.statuses = _m.sent();
-                                        _loop_1 = function (row) {
-                                            var index = this_1.authService.myorders.findIndex(function (e) { return e.id === row.id && row.status === 1; });
-                                            if (index >= 0) {
-                                                var indexuser = this_1.authService.myorders[index].orders_accepted.findIndex(function (user) { var _a; return user.id === ((_a = _this.authService.currentUser) === null || _a === void 0 ? void 0 : _a.id) && user.status_order === 1; });
-                                                if (indexuser >= 0) {
-                                                    this_1.authService.activeorder = this_1.authService.myorders[index];
-                                                    this_1.authService.myorders.splice(index, 1);
-                                                }
-                                            }
-                                        };
-                                        this_1 = this;
-                                        for (_i = 0, _j = this.authService.myorders; _i < _j.length; _i++) {
-                                            row = _j[_i];
-                                            _loop_1(row);
-                                        }
+                                        _h.statuses = _l.sent();
+                                        // for (let row of this.authService.myorders) {
+                                        //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
+                                        //   if (index >= 0) {
+                                        //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
+                                        //       status_order: number | undefined;
+                                        //       id: number | undefined;
+                                        //     }) => user.id === this.authService.currentUser?.id && user.status_order === 1)
+                                        //     if (indexuser >= 0) {
+                                        //       this.authService.activeorder = this.authService.myorders[index];
+                                        //       this.authService.myorders.splice(index, 1)
+                                        //     }
+                                        //   }
+                                        // }
                                         this.socketService.updateAllOrders().subscribe(function (res) { return __awaiter(_this, void 0, void 0, function () {
-                                            var _a, _loop_2, this_2, _i, _b, row;
-                                            var _this = this;
-                                            return __generator(this, function (_c) {
-                                                switch (_c.label) {
-                                                    case 0:
-                                                        _a = this.authService;
-                                                        return [4 /*yield*/, this.authService.getMyOrders().toPromise()];
+                                            return __generator(this, function (_a) {
+                                                switch (_a.label) {
+                                                    case 0: 
+                                                    // this.authService.myorders = await this.authService.getMyOrders().toPromise();
+                                                    // for (let row of this.authService.myorders) {
+                                                    //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
+                                                    //   if (index >= 0) {
+                                                    //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
+                                                    //       status_order: number | undefined;
+                                                    //       user_id: number | undefined;
+                                                    //     }) => user.user_id === this.authService.currentUser?.id && user.status_order === 1)
+                                                    //     if (indexuser >= 0) {
+                                                    //       this.authService.activeorder = this.authService.myorders[index];
+                                                    //       this.authService.myorders.splice(index, 1)
+                                                    //     }
+                                                    //   }
+                                                    // }
+                                                    return [4 /*yield*/, this.checkSession()];
                                                     case 1:
-                                                        _a.myorders = _c.sent();
-                                                        _loop_2 = function (row) {
-                                                            var index = this_2.authService.myorders.findIndex(function (e) { return e.id === row.id && row.status === 1; });
-                                                            if (index >= 0) {
-                                                                var indexuser = this_2.authService.myorders[index].orders_accepted.findIndex(function (user) { var _a; return user.user_id === ((_a = _this.authService.currentUser) === null || _a === void 0 ? void 0 : _a.id) && user.status_order === 1; });
-                                                                if (indexuser >= 0) {
-                                                                    this_2.authService.activeorder = this_2.authService.myorders[index];
-                                                                    this_2.authService.myorders.splice(index, 1);
-                                                                }
-                                                            }
-                                                        };
-                                                        this_2 = this;
-                                                        for (_i = 0, _b = this.authService.myorders; _i < _b.length; _i++) {
-                                                            row = _b[_i];
-                                                            _loop_2(row);
-                                                        }
-                                                        return [4 /*yield*/, this.checkSession()];
-                                                    case 2:
-                                                        _c.sent();
+                                                        // this.authService.myorders = await this.authService.getMyOrders().toPromise();
+                                                        // for (let row of this.authService.myorders) {
+                                                        //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
+                                                        //   if (index >= 0) {
+                                                        //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
+                                                        //       status_order: number | undefined;
+                                                        //       user_id: number | undefined;
+                                                        //     }) => user.user_id === this.authService.currentUser?.id && user.status_order === 1)
+                                                        //     if (indexuser >= 0) {
+                                                        //       this.authService.activeorder = this.authService.myorders[index];
+                                                        //       this.authService.myorders.splice(index, 1)
+                                                        //     }
+                                                        //   }
+                                                        // }
+                                                        _a.sent();
                                                         return [2 /*return*/];
                                                 }
                                             });
                                         }); });
-                                        _k = this.authService;
+                                        _j = this.authService;
                                         return [4 /*yield*/, this.authService.getNotification().toPromise()];
                                     case 9:
-                                        _k.notifications = _m.sent();
-                                        _l = this.authService;
+                                        _j.notifications = _l.sent();
+                                        _k = this.authService;
                                         return [4 /*yield*/, this.authService.getMessages().toPromise()];
                                     case 10:
-                                        _l.messages = _m.sent();
+                                        _k.messages = _l.sent();
                                         this.socketService.updateAllMessages().subscribe(function (res) { return __awaiter(_this, void 0, void 0, function () {
                                             var _a;
                                             return __generator(this, function (_b) {
@@ -250,7 +250,7 @@ var AppComponent = /** @class */ (function () {
                                     case 11:
                                         //this.authService.allordersfree = await this.authService.getAllOrdersFree().toPromise();
                                         //this.authService.allmyordersprocessing = await this.authService.getAllMyOrdersProcessing().toPromise();
-                                        _m.sent();
+                                        _l.sent();
                                         geolocation_1.Geolocation.getCurrentPosition().then(function (resp) { return __awaiter(_this, void 0, void 0, function () {
                                             var get;
                                             var _this = this;
@@ -279,15 +279,15 @@ var AppComponent = /** @class */ (function () {
                                         console.log('here');
                                         return [4 /*yield*/, this.router.navigate(['/name'], { replaceUrl: true })];
                                     case 13:
-                                        _m.sent();
-                                        _m.label = 14;
+                                        _l.sent();
+                                        _l.label = 14;
                                     case 14: return [3 /*break*/, 17];
                                     case 15:
                                         this.authService.authenticationState.next(false);
                                         return [4 /*yield*/, this.router.navigate(['selectlanguage'], { replaceUrl: true })];
                                     case 16:
-                                        _m.sent();
-                                        _m.label = 17;
+                                        _l.sent();
+                                        _l.label = 17;
                                     case 17: return [2 /*return*/];
                                 }
                             });
@@ -316,8 +316,8 @@ var AppComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 if (this.platform.is('ios') || this.platform.is('android')) {
                     this.platform.ready().then(function () {
-                        firebase_analytics_1.FirebaseAnalytics.initializeFirebase(environment_1.environment.firebase);
-                        firebase_analytics_1.FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
+                        // FirebaseAnalytics.initializeFirebase(environment.firebase)
+                        // FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
                         _this.updateService.checkForUpdates();
                         network_1.Network.getStatus().then(function (status) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {

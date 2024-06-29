@@ -447,8 +447,9 @@ var AuthenticationService = /** @class */ (function () {
             }
         }));
     };
-    AuthenticationService.prototype.getMyOrders = function () {
-        var sUrl = API_URL + '/users/getMyOrdersDriver';
+    AuthenticationService.prototype.getMyOrders = function (data) {
+        var sUrl = API_URL + '/users/getMyOrdersDriver?from=' + data.from + '&limit=' + data.limit + '&transportType=' + (data === null || data === void 0 ? void 0 : data.transportType);
+        ;
         return this.http.get(sUrl)
             .pipe(operators_1.map(function (res) {
             if (res.status) {

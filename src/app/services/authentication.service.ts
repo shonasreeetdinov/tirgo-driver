@@ -417,8 +417,8 @@ export class AuthenticationService {
       }));
   }
 
-  getMyOrders() {
-    const sUrl = API_URL + '/users/getMyOrdersDriver';
+  getMyOrders(data) {
+    const sUrl = API_URL + '/users/getMyOrdersDriver?from=' + data.from + '&limit=' + data.limit + '&transportType=' + data?.transportType;;
     return this.http.get<any>(sUrl)
       .pipe(map(res => {
         if (res.status) {
