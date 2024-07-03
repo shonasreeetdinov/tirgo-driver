@@ -63,20 +63,16 @@ export class HomePage implements OnInit {
   }
 
   async getOrders() {
-    // this.loader = await this.loadingCtrl.create({
-    //   message: "Загрузка заказов...",
-    // });
-    // await this.loader.present();
     this.authService.getMyOrders(this.query).subscribe(
       (res: any) => {
         if (res) {
+          console.log(res);
+          
           this.items = res;
-          // this.loader.dismiss();
         }
       },
       (error) => {
         console.error('Error fetching orders:', error);
-        // this.loader.dismiss();
       }
     );
   }

@@ -114,18 +114,13 @@ var HomePage = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                // this.loader = await this.loadingCtrl.create({
-                //   message: "Загрузка заказов...",
-                // });
-                // await this.loader.present();
                 this.authService.getMyOrders(this.query).subscribe(function (res) {
                     if (res) {
+                        console.log(res);
                         _this.items = res;
-                        // this.loader.dismiss();
                     }
                 }, function (error) {
                     console.error('Error fetching orders:', error);
-                    // this.loader.dismiss();
                 });
                 return [2 /*return*/];
             });

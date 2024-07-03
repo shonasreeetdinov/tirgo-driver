@@ -21,7 +21,7 @@
 </div>
 
 <ion-content>
-  <div *ngIf="items && items.length === 0" class="noItem">
+  <div *ngIf="authService.mytruck && authService.mytruck.length === 0" class="noItem">
     <ion-icon src="assets/img/wrong.svg"></ion-icon>
     <p>
       {{'Пока нет заказов для вас.' | translate}}
