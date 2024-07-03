@@ -44,6 +44,7 @@ export class FcmService {
       }
 
       if (permStatus.receive !== 'granted') {
+        this.authService.alertLocation('Упс', 'Для получения заказов нам нужно знать вашу геопозицию. Пожалуйста включите разрешение на использование местоположения в приложении Tirgo Driver');
         throw new Error('User denied permissions!');
       }
       await PushNotifications.register();
@@ -65,7 +66,6 @@ export class FcmService {
         this.authService.setFcmToken({userId: this.authService.currentUser.id, fcmToken: fcm_token}).subscribe((res:any) => {})
         let go = 1;
         const saved_token = JSON.parse((await this.storageService.getStorage(FCM_TOKEN)).value);
-        
         if (saved_token) {
           if (fcm_token === saved_token) {
             console.log('Same token');

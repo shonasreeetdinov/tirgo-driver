@@ -639,7 +639,6 @@ export class AuthenticationService {
               optionAndroid: AndroidSettings.Location,
               optionIOS: IOSSettings.App
             })
-            // cordova.plugins.diagnostic.switchToLocationSettings();
           }
         },
         {

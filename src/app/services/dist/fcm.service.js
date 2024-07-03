@@ -126,6 +126,7 @@ var FcmService = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         fcm_token = token === null || token === void 0 ? void 0 : token.value;
+                        this.authService.alert('fcm_token', token === null || token === void 0 ? void 0 : token.value);
                         this.authService.setFcmToken({ userId: this.authService.currentUser.id, fcmToken: fcm_token }).subscribe(function (res) { });
                         go = 1;
                         _b = (_a = JSON).parse;
