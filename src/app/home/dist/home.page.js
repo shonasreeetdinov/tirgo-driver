@@ -82,6 +82,7 @@ var HomePage = /** @class */ (function () {
         this.loadingSendButton = false;
         this.filteredCityOut = "";
         this.query = { from: 0, limit: 10, transportType: '' };
+        this.isRefreshed = false;
         this.haveSameContents = function (a, b) {
             if (!a || !b)
                 return false;
@@ -114,12 +115,14 @@ var HomePage = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
+                this.loadingOrders = true;
                 this.authService.getMyOrders(this.query).subscribe(function (res) {
                     if (res) {
-                        console.log(res);
                         _this.items = res;
                     }
+                    _this.loadingOrders = false;
                 }, function (error) {
+                    _this.loadingOrders = false;
                     console.error('Error fetching orders:', error);
                 });
                 return [2 /*return*/];
@@ -149,10 +152,13 @@ var HomePage = /** @class */ (function () {
     };
     HomePage.prototype.doRefresh = function (event) {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
+                this.isRefreshed = true;
                 this.selectTypeTransport(this.selectedtruck);
                 setTimeout(function () {
                     event.target.complete();
+                    _this.isRefreshed = false;
                 }, 1000);
                 return [2 /*return*/];
             });

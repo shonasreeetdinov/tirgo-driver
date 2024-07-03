@@ -45,6 +45,8 @@ export class HomePage implements OnInit {
   myTruckTypeIds: any;
   loader
   query = { from: 0, limit: 10, transportType: '' }
+  loadingOrders
+  isRefreshed: boolean = false;
   constructor(
     public authService: AuthenticationService,
     public alertController: AlertController,
@@ -63,15 +65,16 @@ export class HomePage implements OnInit {
   }
 
   async getOrders() {
+    this.loadingOrders = true;
     this.authService.getMyOrders(this.query).subscribe(
       (res: any) => {
         if (res) {
-          console.log(res);
-          
           this.items = res;
         }
+        this.loadingOrders = false;
       },
       (error) => {
+        this.loadingOrders = false;
         console.error('Error fetching orders:', error);
       }
     );
@@ -94,9 +97,11 @@ export class HomePage implements OnInit {
     );
   }
   async doRefresh(event: any) {
+    this.isRefreshed = true;
     this.selectTypeTransport(this.selectedtruck);
     setTimeout(() => {
       event.target.complete();
+      this.isRefreshed = false;
     }, 1000);
   }
   selectType(type: string) {
@@ -349,7 +354,7 @@ export class HomePage implements OnInit {
   }
   selectTypeTransport(id: string) {
     this.selectedtruck = id;
-    this.query = {from: 0, limit: 10, transportType: id};
+    this.query = { from: 0, limit: 10, transportType: id };
     this.getOrders();
   }
   filterOrders() {
