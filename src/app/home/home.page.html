@@ -21,6 +21,10 @@
 </div>
 
 <ion-content>
+  <div style="display: flex; justify-content: center; align-items: center;" *ngIf="loadingOrders && !isRefreshed">
+    <ion-spinner *ngIf="loadingOrders" name="bubbles" color="light"></ion-spinner>
+  </div>
+
   <div *ngIf="authService.mytruck && authService.mytruck.length === 0" class="noItem">
     <ion-icon src="assets/img/wrong.svg"></ion-icon>
     <p>
