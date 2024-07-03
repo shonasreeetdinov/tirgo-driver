@@ -38,17 +38,18 @@ export function playerFactory() {
     OrderPage,
     AddcontactPage
   ],
- 
+
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot({mode: 'ios'}),
+    IonicModule.forRoot({ mode: 'ios' }),
     AppRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot({
       name: '__tirgodriver',
       driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage],
-  }),    TranslateModule.forRoot({
+    }),
+    TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
@@ -60,11 +61,11 @@ export function playerFactory() {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     { provide: LOCALE_ID, useValue: 'ru' },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: ApiInterceptor,
-            multi: true,
-        },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

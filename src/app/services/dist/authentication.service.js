@@ -961,6 +961,9 @@ var AuthenticationService = /** @class */ (function () {
     AuthenticationService.prototype.getCurrenciesList = function () {
         return this.http.get('https://cbu.uz/ru/arkhiv-kursov-valyut/json/');
     };
+    AuthenticationService.prototype.getActiveOrder = function (userId) {
+        return this.http.get(API_URL + '/users/active-order?userId=' + userId);
+    };
     AuthenticationService.prototype.setFcmToken = function (data) {
         return this.http.post(API_URL + '/users/set-fcm-token', data);
     };

@@ -46,7 +46,6 @@ exports.AppComponent = void 0;
 var core_1 = require("@angular/core");
 var geolocation_1 = require("@capacitor/geolocation");
 var user_1 = require("./user");
-var network_1 = require("@capacitor/network");
 var axios_1 = require("axios");
 var AppComponent = /** @class */ (function () {
     function AppComponent(platform, socketService, themeService, authService, storage, translateService, alertController, router, fcm, updateService) {
@@ -61,6 +60,7 @@ var AppComponent = /** @class */ (function () {
         this.router = router;
         this.fcm = fcm;
         this.updateService = updateService;
+        this.connected = true;
         this.router.navigate(['loading']);
         this.initializeApp();
         setInterval(function () {
@@ -138,6 +138,11 @@ var AppComponent = /** @class */ (function () {
                                             this.authService.authenticationState.next(true);
                                         }
                                         if (!(this.authService.currentUser.name !== null)) return [3 /*break*/, 12];
+                                        this.authService.getActiveOrder(this.authService.currentUser.id).subscribe(function (res) {
+                                            if (res) {
+                                                _this.authService.activeorder = res.data.data;
+                                            }
+                                        });
                                         this.socketService.connect();
                                         _a = this.authService;
                                         return [4 /*yield*/, this.authService.getTypeTruck().toPromise()];
@@ -156,21 +161,23 @@ var AppComponent = /** @class */ (function () {
                                     case 4:
                                         _d.contacts = _l.sent();
                                         _e = this.authService;
-                                        return [4 /*yield*/, this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise()];
-                                    case 5:
-                                        _e.myorders = _l.sent();
-                                        _f = this.authService;
                                         return [4 /*yield*/, this.authService.getMyArchiveOrders().toPromise()];
-                                    case 6:
-                                        _f.myarchiveorders = _l.sent();
-                                        _g = this.authService;
+                                    case 5:
+                                        _e.myarchiveorders = _l.sent();
+                                        _f = this.authService;
                                         return [4 /*yield*/, this.authService.getCurrency().toPromise()];
-                                    case 7:
-                                        _g.currency = _l.sent();
-                                        _h = this.authService;
+                                    case 6:
+                                        _f.currency = _l.sent();
+                                        _g = this.authService;
                                         return [4 /*yield*/, this.authService.getStatuses().toPromise()];
+                                    case 7:
+                                        _g.statuses = _l.sent();
+                                        // this.authService.activeorder = await this.authService.getActiveOrder(this.authService.currentUser.id).toPromise();
+                                        _h = this.authService;
+                                        return [4 /*yield*/, this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise()];
                                     case 8:
-                                        _h.statuses = _l.sent();
+                                        // this.authService.activeorder = await this.authService.getActiveOrder(this.authService.currentUser.id).toPromise();
+                                        _h.myorders = _l.sent();
                                         // for (let row of this.authService.myorders) {
                                         //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
                                         //   if (index >= 0) {
@@ -244,6 +251,17 @@ var AppComponent = /** @class */ (function () {
                                                 }
                                             });
                                         }); });
+                                        this.socketService.updateActiveOrder().subscribe(function (res) { return __awaiter(_this, void 0, void 0, function () {
+                                            var _this = this;
+                                            return __generator(this, function (_a) {
+                                                this.authService.getActiveOrder(this.authService.currentUser.id).subscribe(function (res) {
+                                                    if (res) {
+                                                        _this.authService.activeorder = res.data.data;
+                                                    }
+                                                });
+                                                return [2 /*return*/];
+                                            });
+                                        }); });
                                         //this.authService.allordersfree = await this.authService.getAllOrdersFree().toPromise();
                                         //this.authService.allmyordersprocessing = await this.authService.getAllMyOrdersProcessing().toPromise();
                                         return [4 /*yield*/, this.router.navigate(['/tabs/home'], { replaceUrl: true })];
@@ -275,9 +293,7 @@ var AppComponent = /** @class */ (function () {
                                             });
                                         }); });
                                         return [3 /*break*/, 14];
-                                    case 12:
-                                        console.log('here');
-                                        return [4 /*yield*/, this.router.navigate(['/name'], { replaceUrl: true })];
+                                    case 12: return [4 /*yield*/, this.router.navigate(['/name'], { replaceUrl: true })];
                                     case 13:
                                         _l.sent();
                                         _l.label = 14;
@@ -316,25 +332,21 @@ var AppComponent = /** @class */ (function () {
             return __generator(this, function (_a) {
                 if (this.platform.is('ios') || this.platform.is('android')) {
                     this.platform.ready().then(function () {
-                        // FirebaseAnalytics.initializeFirebase(environment.firebase)
-                        // FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
                         _this.updateService.checkForUpdates();
-                        network_1.Network.getStatus().then(function (status) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                if (status.connected) {
-                                    if (this.authService.isAuthenticated()) {
-                                        this.router.navigate(['tabs', 'home'], { replaceUrl: true });
-                                    }
-                                    else {
-                                        this.router.navigate(['selectlanguage'], { replaceUrl: true });
-                                    }
-                                }
-                                else {
-                                    this.router.navigate(['nointernet']);
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); });
+                        // Network.getStatus().then(async (status) => {
+                        //   if (status.connected) {
+                        //     console.log('online');
+                        //     if (this.authService.isAuthenticated()) {
+                        //       this.router.navigate(['tabs', 'home'], { replaceUrl: true });
+                        //     } else {
+                        //       this.router.navigate(['selectlanguage'], { replaceUrl: true });
+                        //     }
+                        //   } 
+                        //   else {
+                        //     console.log('offline');
+                        //     this.router.navigate(['offline']);
+                        //   }
+                        // });
                         _this.themeService.restore();
                     });
                 }

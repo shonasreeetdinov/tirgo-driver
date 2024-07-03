@@ -141,7 +141,11 @@ const routes: Routes = [
     path: 'addsubscribe',
     loadChildren: () => import('./addsubscribe/addsubscribe.module').then(m => m.AddSubscribeModule)
   },
-
+  {
+    path: 'offline',
+    loadChildren: () => import('./offline/offline.module').then( m => m.OfflinePageModule)
+  }
+  
 ];
 @NgModule({
   imports: [

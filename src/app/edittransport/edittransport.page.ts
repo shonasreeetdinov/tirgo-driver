@@ -109,43 +109,11 @@ export class EdittransportPage implements OnInit {
   }
   async saveTransport(){
     this.loadingAddTransport = true;
-    // if (!this.name.length){
-    //   this.authService.alert('Ошибка','Требуется ввести марку, модель транспорта')
-    //   this.loadingAddTransport = false;
-    // }else if(!this.description.length){
-    //   this.authService.alert('Ошибка','Требуется ввести описание транспорта. Это поможет клиенту понять подходит ли транспорт под его требования.')
-    //   this.loadingAddTransport = false;
-    // }else if(this.maxweight < 1000){
-    //   this.authService.alert('Ошибка','Грузоподъемность не может быть менее 1 000 кг.')
-    //   this.loadingAddTransport = false;
-    // }else if(this.maxweight > 35000){
-    //   this.authService.alert('Ошибка','Грузоподъемность не может быть более 35 000 кг.')
-    //   this.loadingAddTransport = false;
-    // }
-    // else if(!this.license_files.length){
-    //   this.authService.alert('Ошибка','Требуется добавить фото лицензии на перевозку грузов')
-    //   this.loadingAddTransport = false;
-    // }else if(!this.car_photos.length){
-    //   this.authService.alert('Ошибка','Требуется добавить фото транспорта')
-    //   this.loadingAddTransport = false;
-    // }else if(!this.tech_passport_files.length){
-    //   this.authService.alert('Ошибка','Требуется добавить фото технического транспорта на транспорт')
-    //   this.loadingAddTransport = false;
-    // }
-    // else if(this.cubature === ''){
-    //   this.authService.alert('Ошибка','Требуется указать кубатуру прицепа')
-    //   this.loadingAddTransport = false;
-    // }else if(this.state_number === ''){
-    //   this.authService.alert('Ошибка','Требуется указать гос. номер тягача')
-    //   this.loadingAddTransport = false;
-    // }else {
-    //   this.loadingAddTransport = false;
     await this.authService.editTransport(this.name,this.description,this.maxweight,this.type,this.adr,this.item.id,this.car_photos,this.license_files,this.tech_passport_files,this.cubature,this.state_number).toPromise()
         .then(async (res:any) => {
           if (res.status){
             this.loadingAddTransport = false;
             this.authService.mytruck = await this.authService.getTruck().toPromise();
-            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
             await this.close()
             await this.authService.alert('Отлично','Транспорт успешно изменен')
           }else {
@@ -167,8 +135,6 @@ export class EdittransportPage implements OnInit {
       if (res) {
         if (type == 'tech_passport_files') {
           this.tech_passport_files.push(res.file);
-          console.log(this.tech_passport_files);
-
         }
         if (type == 'license_files') {
           this.license_files.push(res.file);
@@ -184,27 +150,6 @@ export class EdittransportPage implements OnInit {
       message: 'Отгружаем фото',
       cssClass: 'custom-loading'
     });
-    // await this.authService.camera.getPicture(this.authService.optionsCamera).then(async (imageData:any) => {
-    //   this.loading.present()
-    //   const fileTransfer: FileTransferObject = await this.authService.transfer.create();
-    //   const headers = {'Authorization': 'Bearer ' + AuthenticationService.jwt};
-    //   const uploadOpts: FileUploadOptions = {
-    //     headers: headers,
-    //     fileKey: 'file',
-    //     mimeType: "image/*",
-    //     chunkedMode: false,
-    //     fileName: imageData.substr(imageData.lastIndexOf('/') + 1)
-    //   };
-    //   uploadOpts.params = {typeUser:'driver',typeImage:'car-docks'};
-    //   const res = JSON.parse((await fileTransfer.upload(imageData, this.authService.API_URL + '/users/uploadImage', uploadOpts)).response)
-    //   if (res.status){
-    //     this.tech_passport_files.push(res.file)
-    //     this.tech_passport_files.forEach((v) => {
-    //       v.reviewUrl = this.file_url + v.name
-    //     })
-    //     this.loading.dismiss();
-    //   }
-    // })
   }
   async delFileTechTransport(file:string){
     const alert = await this.alertController.create({
@@ -238,24 +183,6 @@ export class EdittransportPage implements OnInit {
       message: 'Отгружаем фото',
       cssClass: 'custom-loading'
     });
-    // await this.authService.camera.getPicture(this.authService.optionsCamera).then(async (imageData:any) => {
-    //   this.loading.present()
-    //   const fileTransfer: FileTransferObject = await this.authService.transfer.create();
-    //   const headers = {'Authorization': 'Bearer ' + AuthenticationService.jwt};
-    //   const uploadOpts: FileUploadOptions = {
-    //     headers: headers,
-    //     fileKey: 'file',
-    //     mimeType: "image/*",
-    //     chunkedMode: false,
-    //     fileName: imageData.substr(imageData.lastIndexOf('/') + 1)
-    //   };
-    //   uploadOpts.params = {typeUser:'driver',typeImage:'car-docks'};
-    //   const res = JSON.parse((await fileTransfer.upload(imageData, this.authService.API_URL + '/users/uploadImage', uploadOpts)).response)
-    //   if (res.status){
-    //     this.license_files.push(res.file)
-    //     this.loading.dismiss();
-    //   }
-    // })
   }
   async delFileLicense(file){
     const alert = await this.alertController.create({
@@ -335,7 +262,6 @@ export class EdittransportPage implements OnInit {
     });
     await alert.present();
   }
-
   async setAdrUser(ev: any) {
     this.adr = ev.target.checked
   }

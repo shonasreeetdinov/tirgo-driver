@@ -91,6 +91,9 @@ var SocketService = /** @class */ (function () {
     SocketService.prototype.updateDriverBalance = function () {
         return this.createObservableEvent('update-driver-balance');
     };
+    SocketService.prototype.updateActiveOrder = function () {
+        return this.createObservableEvent('update-active-order');
+    };
     SocketService.prototype.updateTirgoServiceBalance = function () {
         return this.createObservableEvent('update-alpha-balance');
     };

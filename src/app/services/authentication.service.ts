@@ -829,7 +829,9 @@ export class AuthenticationService {
   getCurrenciesList() {
     return this.http.get('https://cbu.uz/ru/arkhiv-kursov-valyut/json/');
   }
-
+  getActiveOrder(userId) {
+    return this.http.get(API_URL+ '/users/active-order?userId='+userId);
+  }
   setFcmToken(data) {
     return this.http.post(API_URL + '/users/set-fcm-token', data)
   }

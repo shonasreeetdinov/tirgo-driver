@@ -20,6 +20,9 @@
         <div class="input-with-suffix" style="position: relative;">
           <input type="tel" #tirInput inputmode="decimal" name="tir" [(ngModel)]="data.tir"
             (ngModelChange)="valueChanged('tir')">
+            <div *ngIf="amountLoader" class="loader-container">
+              <ion-spinner name="bubbles" color="light"></ion-spinner>
+            </div>
           <span class="suffix">TIR</span>
 
         </div>
@@ -27,7 +30,9 @@
         <div style="position: relative;">
           <input type="tel" #amountInput inputmode="number" name="amount" [(ngModel)]="data.amount"
             (ngModelChange)="valueChanged('amount')">
-
+            <div *ngIf="tirLoader" class="loader-container">
+              <ion-spinner name="bubbles" color="light"></ion-spinner>
+            </div>
         </div>
         <select style="background: #252333;color: #fff; height: 55px; border: none; border-radius: 4px; outline: none;"
           name="currency" [(ngModel)]="data.currencyCode" (ngModelChange)="valueChanged('tir')">
@@ -46,14 +51,33 @@
         <p class="cart-wrap-balance" style="font-weight: bold;" *ngIf="authService.currentUser.group_balance">Баланс
           группы: {{authService.currentUser.group_balance}} Tir <span></span></p>
       </div>
-
+      
       <button class="reg-btn podpis-buy" (click)="goToSupportAdmin()"
         style="background-color: #00ABF1FF;margin: 30px 0;display: flex;align-items: center;justify-content: center;gap:10px">
         <img src="assets/img/tg.svg" alt="">
         <span>{{'Перейти в телеграмм для оформления' | translate}}</span>
       </button>
 
-      <ion-accordion-group style="width: 100%;">
+      <p style="text-align: center; width: 100%;"><b>Список услуги</b></p>
+      <ion-segment value="subscribe" style="margin: 15px 0; height: 45px;" (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="subscribe">
+          <ion-label style="color: #fff;">С подпиской</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="unsubscribe">
+          <ion-label style="color: #fff;">Без подписки</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      
+      <div style="width: 100%;" *ngFor="let service of showedServices">
+        <div style="margin:5px 0; display: flex; align-items: center; justify-content: space-between; border: 1px solid #ccc; color: #fff; padding: 10px;border-radius:10px">
+          <div style="width: 70%;">{{service.name}}</div>
+          <div>{{ service.price_uzs == 0 && service.without_subscription == 0 ? 'Бесплатно' : (service.price_uzs | numberFormat) + ' сум' }}</div>
+        </div>
+      </div>
+      
+      
+
+      <ion-accordion-group style="width: 100%; margin-top: 20px;">
         <ion-accordion value="first">
           <ion-item slot="header" style="background-color: #1C1A28 !important; color: white;">
             <ion-label>История оформлений услуг</ion-label>

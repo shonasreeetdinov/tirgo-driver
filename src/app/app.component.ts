@@ -12,8 +12,6 @@ import { Network } from "@capacitor/network";
 import axios from 'axios';
 import { FcmService } from './services/fcm.service';
 import { UpdateService } from './services/update.service';
-import { FirebaseAnalytics } from '@capacitor-community/firebase-analytics';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +19,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-
+  connected: boolean = true;
   constructor(
     private platform: Platform,
     private socketService: SocketService,
@@ -61,7 +59,8 @@ export class AppComponent {
     this.authService.authenticationState.subscribe(async res => {
       if (res) {
         await this.checkSession();
-      } else {
+      }
+      else {
         await this.router.navigate(['selectlanguage'], { replaceUrl: true });
       }
     })
@@ -75,15 +74,22 @@ export class AppComponent {
           this.authService.authenticationState.next(true);
         }
         if (this.authService.currentUser.name !== null) {
+          this.authService.getActiveOrder(this.authService.currentUser.id).subscribe((res: any) => {
+            if (res) {
+              this.authService.activeorder = res.data.data;
+            }
+          })
           this.socketService.connect();
           this.authService.typetruck = await this.authService.getTypeTruck().toPromise();
           this.authService.typecargo = await this.authService.getTypeCargo().toPromise();
           this.authService.mytruck = await this.authService.getTruck().toPromise();
           this.authService.contacts = await this.authService.getContacts().toPromise();
-          this.authService.myorders = await this.authService.getMyOrders({from:0,limit:50,transportType:''}).toPromise();
           this.authService.myarchiveorders = await this.authService.getMyArchiveOrders().toPromise();
           this.authService.currency = await this.authService.getCurrency().toPromise();
           this.authService.statuses = await this.authService.getStatuses().toPromise();
+          // this.authService.activeorder = await this.authService.getActiveOrder(this.authService.currentUser.id).toPromise();
+          
+          this.authService.myorders = await this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise();
           // for (let row of this.authService.myorders) {
           //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
           //   if (index >= 0) {
@@ -120,6 +126,13 @@ export class AppComponent {
           this.socketService.updateAllMessages().subscribe(async (res: any) => {
             this.authService.messages = await this.authService.getMessages().toPromise();
           })
+          this.socketService.updateActiveOrder().subscribe(async (res: any) => {
+            this.authService.getActiveOrder(this.authService.currentUser.id).subscribe((res: any) => {
+              if (res) {
+                this.authService.activeorder = res.data.data;
+              }
+            })
+          })
           //this.authService.allordersfree = await this.authService.getAllOrdersFree().toPromise();
           //this.authService.allmyordersprocessing = await this.authService.getAllMyOrdersProcessing().toPromise();
           await this.router.navigate(['/tabs/home'], { replaceUrl: true });
@@ -137,7 +150,6 @@ export class AppComponent {
           });
         }
         else {
-          console.log('here')
           await this.router.navigate(['/name'], { replaceUrl: true });
         }
       }
@@ -153,22 +165,21 @@ export class AppComponent {
   async initializeApp() {
     if (this.platform.is('ios') || this.platform.is('android')) {
       this.platform.ready().then(() => {
-        // FirebaseAnalytics.initializeFirebase(environment.firebase)
-        // FirebaseAnalytics.logEvent({ name: 'test_event', params: { param1: 'value1' } });
-
         this.updateService.checkForUpdates();
-
-        Network.getStatus().then(async (status) => {
-          if (status.connected) {
-            if (this.authService.isAuthenticated()) {
-              this.router.navigate(['tabs', 'home'], { replaceUrl: true });
-            } else {
-              this.router.navigate(['selectlanguage'], { replaceUrl: true });
-            }
-          } else {
-            this.router.navigate(['nointernet']);
-          }
-        });
+        // Network.getStatus().then(async (status) => {
+        //   if (status.connected) {
+        //     console.log('online');
+        //     if (this.authService.isAuthenticated()) {
+        //       this.router.navigate(['tabs', 'home'], { replaceUrl: true });
+        //     } else {
+        //       this.router.navigate(['selectlanguage'], { replaceUrl: true });
+        //     }
+        //   } 
+        //   else {
+        //     console.log('offline');
+        //     this.router.navigate(['offline']);
+        //   }
+        // });
         this.themeService.restore();
       });
     }

@@ -1,8 +1,8 @@
 <app-header></app-header>
 
 <div class="scroll-horizontal" *ngIf="authService.mytruck && authService.mytruck.length > 0">
-  <div class="scroll-item widthAuto myProfession firstItemProf" [ngClass]="{'bangbang': selectedtruck == '0'}"
-    (click)="selectTypeTransport('0')">
+  <div class="scroll-item widthAuto myProfession firstItemProf" [ngClass]="{'bangbang': selectedtruck == ''}"
+    (click)="selectTypeTransport('')">
     <div>{{'Все' | translate}}</div>
   </div>
   <div class="scroll-item widthAuto myProfession" [ngClass]="{'bangbang': row.type === selectedtruck}"
@@ -130,10 +130,6 @@
     </ion-infinite-scroll>
   </div>
 
-
-
-
-
   <ion-modal [isOpen]="modalAppendOrderFull" (willDismiss)="closeModalAll()" class="modal-append-order-full">
     <ng-template>
       <div class="cta-modal">
@@ -221,6 +217,5 @@
       </div>
     </ng-template>
   </ion-modal>
-
 
 </ion-content>

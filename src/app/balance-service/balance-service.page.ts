@@ -14,6 +14,9 @@ import axios from 'axios';
 export class BalanceServicePage implements OnInit {
 
   loading: boolean = false;
+  tirLoader: boolean = false;
+  amountLoader: boolean = false;
+
   services
   selectmethodpay: string = 'click'
   amount: string = '';
@@ -30,6 +33,8 @@ export class BalanceServicePage implements OnInit {
   servicesWithSubscription: any[] = [];
   servicesWithoutSubscription: any[] = [];
   pendingService: any;
+
+  showedServices
 
   tirCurrency
   kztToUzs
@@ -101,35 +106,53 @@ export class BalanceServicePage implements OnInit {
   }
 
   valueChanged(type) {
-    if (type == 'tir') {
+    if (type == 'tir' && this.data.tir) {
+      this.tirLoader = true;
       this.data.amount = null;
       this.authService.convertCurrency(this.data).subscribe((res: any) => {
         this.data.amount = +this.translateString(res.data.amount);
+        this.tirLoader = false;
+      }, (err) => {
+        this.tirLoader = false
       })
     }
-    if (type == 'amount') {
+    if (type == 'amount' && this.data.amount) {
+      this.amountLoader = true;
       this.data.tir = null;
       this.authService.convertCurrency(this.data).subscribe((res: any) => {
         this.data.tir = +this.translateString(res.data.amount);
+        this.amountLoader = false;
+      }, (err) => {
+        this.amountLoader = false
       })
     }
   }
- 
+
   translateString(input) {
-    const [beforeDot, afterDot] = input.split('.');
-    const afterDotTrimmed = afterDot.slice(0, 2);
+    let beforeDot, afterDot, afterDotTrimmed
+    if (!isNaN(input) && typeof input === 'string') {
+      [beforeDot, afterDot] = input.split('.');
+      afterDotTrimmed = afterDot.slice(0, 2);
+    }
     return beforeDot + '.' + afterDotTrimmed;
   }
-
+  segmentChanged(event: any) {
+    const selectedSegment = event.detail.value;
+    if (selectedSegment === 'subscribe') {
+      this.showedServices = this.servicesWithSubscription;
+    } else if (selectedSegment === 'unsubscribe') {
+      this.showedServices = this.servicesWithoutSubscription;
+    }
+  }
   getPrice() {
     this.authService.getServicesList().subscribe((res: any) => {
       if (res.status) {
         this.services = res.data;
-        this.servicesWithoutSubsctription = res.data.filter(item => item.without_subscription);
-        this.servicesWithSubsctription = res.data.filter(item => !item.without_subscription);
-        this.services = this.servicesWithSubsctription;
+        this.servicesWithoutSubscription = res.data.filter(item => item.without_subscription);
+        this.servicesWithSubscription = res.data.filter(item => !item.without_subscription);
+        this.showedServices = this.servicesWithSubscription;
       }
-    })
+    });
   }
   selectPrice(selectedPriceCard: any) {
     selectedPriceCard.selected = !selectedPriceCard.selected;
@@ -321,7 +344,7 @@ export class BalanceServicePage implements OnInit {
     })
   }
   goToSupportAdmin() {
-    Browser.open({url:'https://t.me/Tirgo_servrice_bot', windowName:'_system'});
+    Browser.open({ url: 'https://t.me/Tirgo_servrice_bot', windowName: '_system' });
   }
   doRefresh(event) {
     setTimeout(() => {
