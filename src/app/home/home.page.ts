@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnChanges,
   OnInit,
 } from "@angular/core";
 import {
@@ -16,7 +15,6 @@ import { AddtransportPage } from "../addtransport/addtransport.page";
 import { SocketService } from "../services/socket.service";
 import { Geolocation } from "@capacitor/geolocation";
 import axios from "axios";
-import { finalize } from "rxjs";
 
 @Component({
   selector: "app-home",
@@ -36,7 +34,7 @@ export class HomePage implements OnInit {
   add_two_days: boolean = false;
   dates: any[] = [];
   price: string = "";
-  selectedtruck: string = '0';
+  selectedtruck: string = '';
   items: any[] = [];
   localItems: any[] = [];
   worldItems: any[] = [];
@@ -46,7 +44,7 @@ export class HomePage implements OnInit {
   filteredCityOut: string = "";
   myTruckTypeIds: any;
   loader
-  query = { from: 0, limit: 10, transportType: '0' }
+  query = { from: 0, limit: 10, transportType: '' }
   constructor(
     public authService: AuthenticationService,
     public alertController: AlertController,
@@ -65,20 +63,16 @@ export class HomePage implements OnInit {
   }
 
   async getOrders() {
-    this.loader = await this.loadingCtrl.create({
-      message: "Загрузка заказов...",
-    });
-    await this.loader.present();
     this.authService.getMyOrders(this.query).subscribe(
       (res: any) => {
         if (res) {
+          console.log(res);
+          
           this.items = res;
-          this.loader.dismiss();
         }
       },
       (error) => {
         console.error('Error fetching orders:', error);
-        this.loader.dismiss();
       }
     );
   }
@@ -213,27 +207,6 @@ export class HomePage implements OnInit {
     } else {
       this.loading = false;
       await this.acceptOrder(item);
-      /*const alert = await this.alertController.create({
-        header: 'Вы уверены?',
-        message: 'Вы действительно хотите принять заказ?',
-        cssClass: 'customAlert',
-        buttons: [
-          {
-            text: 'Нет',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Confirm Cancel');
-            }
-          }, {
-            text: 'Да',
-            handler: async () => {
-              await this.acceptOrder(item)
-            }
-          }
-        ]
-      });
-      await alert.present();*/
     }
   }
   openFilter(isOpen: boolean) {

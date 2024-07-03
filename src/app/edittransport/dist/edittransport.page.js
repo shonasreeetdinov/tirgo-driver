@@ -172,37 +172,6 @@ var EdittransportPage = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.loadingAddTransport = true;
-                        // if (!this.name.length){
-                        //   this.authService.alert('Ошибка','Требуется ввести марку, модель транспорта')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.description.length){
-                        //   this.authService.alert('Ошибка','Требуется ввести описание транспорта. Это поможет клиенту понять подходит ли транспорт под его требования.')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.maxweight < 1000){
-                        //   this.authService.alert('Ошибка','Грузоподъемность не может быть менее 1 000 кг.')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.maxweight > 35000){
-                        //   this.authService.alert('Ошибка','Грузоподъемность не может быть более 35 000 кг.')
-                        //   this.loadingAddTransport = false;
-                        // }
-                        // else if(!this.license_files.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото лицензии на перевозку грузов')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.car_photos.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото транспорта')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.tech_passport_files.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото технического транспорта на транспорт')
-                        //   this.loadingAddTransport = false;
-                        // }
-                        // else if(this.cubature === ''){
-                        //   this.authService.alert('Ошибка','Требуется указать кубатуру прицепа')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.state_number === ''){
-                        //   this.authService.alert('Ошибка','Требуется указать гос. номер тягача')
-                        //   this.loadingAddTransport = false;
-                        // }else {
-                        //   this.loadingAddTransport = false;
                         return [4 /*yield*/, this.authService.editTransport(this.name, this.description, this.maxweight, this.type, this.adr, this.item.id, this.car_photos, this.license_files, this.tech_passport_files, this.cubature, this.state_number).toPromise()
                                 .then(function (res) { return __awaiter(_this, void 0, void 0, function () {
                                 var _a;
@@ -215,10 +184,8 @@ var EdittransportPage = /** @class */ (function () {
                                             return [4 /*yield*/, this.authService.getTruck().toPromise()];
                                         case 1:
                                             _a.mytruck = _b.sent();
-                                            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
                                             return [4 /*yield*/, this.close()];
                                         case 2:
-                                            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
                                             _b.sent();
                                             return [4 /*yield*/, this.authService.alert('Отлично', 'Транспорт успешно изменен')];
                                         case 3:
@@ -241,37 +208,6 @@ var EdittransportPage = /** @class */ (function () {
                                 });
                             }); })];
                     case 1:
-                        // if (!this.name.length){
-                        //   this.authService.alert('Ошибка','Требуется ввести марку, модель транспорта')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.description.length){
-                        //   this.authService.alert('Ошибка','Требуется ввести описание транспорта. Это поможет клиенту понять подходит ли транспорт под его требования.')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.maxweight < 1000){
-                        //   this.authService.alert('Ошибка','Грузоподъемность не может быть менее 1 000 кг.')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.maxweight > 35000){
-                        //   this.authService.alert('Ошибка','Грузоподъемность не может быть более 35 000 кг.')
-                        //   this.loadingAddTransport = false;
-                        // }
-                        // else if(!this.license_files.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото лицензии на перевозку грузов')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.car_photos.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото транспорта')
-                        //   this.loadingAddTransport = false;
-                        // }else if(!this.tech_passport_files.length){
-                        //   this.authService.alert('Ошибка','Требуется добавить фото технического транспорта на транспорт')
-                        //   this.loadingAddTransport = false;
-                        // }
-                        // else if(this.cubature === ''){
-                        //   this.authService.alert('Ошибка','Требуется указать кубатуру прицепа')
-                        //   this.loadingAddTransport = false;
-                        // }else if(this.state_number === ''){
-                        //   this.authService.alert('Ошибка','Требуется указать гос. номер тягача')
-                        //   this.loadingAddTransport = false;
-                        // }else {
-                        //   this.loadingAddTransport = false;
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -293,7 +229,6 @@ var EdittransportPage = /** @class */ (function () {
                                 if (res) {
                                     if (type == 'tech_passport_files') {
                                         _this.tech_passport_files.push(res.file);
-                                        console.log(_this.tech_passport_files);
                                     }
                                     if (type == 'license_files') {
                                         _this.license_files.push(res.file);

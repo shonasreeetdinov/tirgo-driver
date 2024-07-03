@@ -54,6 +54,8 @@ var BalanceServicePage = /** @class */ (function () {
         this.router = router;
         this.cdr = cdr;
         this.loading = false;
+        this.tirLoader = false;
+        this.amountLoader = false;
         this.selectmethodpay = 'click';
         this.amount = '';
         this.payConfirm = false;
@@ -125,32 +127,53 @@ var BalanceServicePage = /** @class */ (function () {
     };
     BalanceServicePage.prototype.valueChanged = function (type) {
         var _this = this;
-        if (type == 'tir') {
+        if (type == 'tir' && this.data.tir) {
+            this.tirLoader = true;
             this.data.amount = null;
             this.authService.convertCurrency(this.data).subscribe(function (res) {
                 _this.data.amount = +_this.translateString(res.data.amount);
+                _this.tirLoader = false;
+            }, function (err) {
+                _this.tirLoader = false;
             });
         }
-        if (type == 'amount') {
+        if (type == 'amount' && this.data.amount) {
+            this.amountLoader = true;
             this.data.tir = null;
             this.authService.convertCurrency(this.data).subscribe(function (res) {
                 _this.data.tir = +_this.translateString(res.data.amount);
+                _this.amountLoader = false;
+            }, function (err) {
+                _this.amountLoader = false;
             });
         }
     };
     BalanceServicePage.prototype.translateString = function (input) {
-        var _a = input.split('.'), beforeDot = _a[0], afterDot = _a[1];
-        var afterDotTrimmed = afterDot.slice(0, 2);
+        var _a;
+        var beforeDot, afterDot, afterDotTrimmed;
+        if (!isNaN(input) && typeof input === 'string') {
+            _a = input.split('.'), beforeDot = _a[0], afterDot = _a[1];
+            afterDotTrimmed = afterDot.slice(0, 2);
+        }
         return beforeDot + '.' + afterDotTrimmed;
+    };
+    BalanceServicePage.prototype.segmentChanged = function (event) {
+        var selectedSegment = event.detail.value;
+        if (selectedSegment === 'subscribe') {
+            this.showedServices = this.servicesWithSubscription;
+        }
+        else if (selectedSegment === 'unsubscribe') {
+            this.showedServices = this.servicesWithoutSubscription;
+        }
     };
     BalanceServicePage.prototype.getPrice = function () {
         var _this = this;
         this.authService.getServicesList().subscribe(function (res) {
             if (res.status) {
                 _this.services = res.data;
-                _this.servicesWithoutSubsctription = res.data.filter(function (item) { return item.without_subscription; });
-                _this.servicesWithSubsctription = res.data.filter(function (item) { return !item.without_subscription; });
-                _this.services = _this.servicesWithSubsctription;
+                _this.servicesWithoutSubscription = res.data.filter(function (item) { return item.without_subscription; });
+                _this.servicesWithSubscription = res.data.filter(function (item) { return !item.without_subscription; });
+                _this.showedServices = _this.servicesWithSubscription;
             }
         });
     };

@@ -74,14 +74,14 @@ var HomePage = /** @class */ (function () {
         this.add_two_days = false;
         this.dates = [];
         this.price = "";
-        this.selectedtruck = '0';
+        this.selectedtruck = '';
         this.items = [];
         this.localItems = [];
         this.worldItems = [];
         this.selectedType = "world";
         this.loadingSendButton = false;
         this.filteredCityOut = "";
-        this.query = { from: 0, limit: 10, transportType: '0' };
+        this.query = { from: 0, limit: 10, transportType: '' };
         this.haveSameContents = function (a, b) {
             if (!a || !b)
                 return false;
@@ -112,31 +112,17 @@ var HomePage = /** @class */ (function () {
     };
     HomePage.prototype.getOrders = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
             var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = this;
-                        return [4 /*yield*/, this.loadingCtrl.create({
-                                message: "Загрузка заказов..."
-                            })];
-                    case 1:
-                        _a.loader = _b.sent();
-                        return [4 /*yield*/, this.loader.present()];
-                    case 2:
-                        _b.sent();
-                        this.authService.getMyOrders(this.query).subscribe(function (res) {
-                            if (res) {
-                                _this.items = res;
-                                _this.loader.dismiss();
-                            }
-                        }, function (error) {
-                            console.error('Error fetching orders:', error);
-                            _this.loader.dismiss();
-                        });
-                        return [2 /*return*/];
-                }
+            return __generator(this, function (_a) {
+                this.authService.getMyOrders(this.query).subscribe(function (res) {
+                    if (res) {
+                        console.log(res);
+                        _this.items = res;
+                    }
+                }, function (error) {
+                    console.error('Error fetching orders:', error);
+                });
+                return [2 /*return*/];
             });
         });
     };

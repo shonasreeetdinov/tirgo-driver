@@ -6,33 +6,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.BalanceServicePageModule = void 0;
+exports.OfflinePageModule = void 0;
 var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
 var forms_1 = require("@angular/forms");
 var angular_1 = require("@ionic/angular");
-var header_module_1 = require("../header/header.module");
+var offline_routing_module_1 = require("./offline-routing.module");
+var offline_page_1 = require("./offline.page");
 var core_2 = require("@ngx-translate/core");
-var balance_service_page_1 = require("./balance-service.page");
-var balance_service_routing_module_1 = require("./balance-service-routing.module");
-var main_pipe_module_1 = require("../pipes/main-pipe.module");
-var BalanceServicePageModule = /** @class */ (function () {
-    function BalanceServicePageModule() {
+var OfflinePageModule = /** @class */ (function () {
+    function OfflinePageModule() {
     }
-    BalanceServicePageModule = __decorate([
+    OfflinePageModule = __decorate([
         core_1.NgModule({
-            declarations: [balance_service_page_1.BalanceServicePage],
             imports: [
                 common_1.CommonModule,
                 forms_1.FormsModule,
                 angular_1.IonicModule,
-                balance_service_routing_module_1.BalanceServicePageRoutingModule,
-                header_module_1.HeaderPageModule,
-                core_2.TranslateModule,
-                main_pipe_module_1.MainPipeModule
-            ]
+                offline_routing_module_1.OfflinePageRoutingModule,
+                core_2.TranslateModule
+            ],
+            declarations: [offline_page_1.OfflinePage]
         })
-    ], BalanceServicePageModule);
-    return BalanceServicePageModule;
+    ], OfflinePageModule);
+    return OfflinePageModule;
 }());
-exports.BalanceServicePageModule = BalanceServicePageModule;
+exports.OfflinePageModule = OfflinePageModule;

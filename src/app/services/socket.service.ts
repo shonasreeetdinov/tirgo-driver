@@ -91,6 +91,10 @@ export class SocketService {
     return this.createObservableEvent('update-driver-balance');
   }
 
+  updateActiveOrder(): Observable<any> {
+    return this.createObservableEvent('update-active-order');
+  }
+
   updateTirgoServiceBalance(): Observable<any> {
     return this.createObservableEvent('update-alpha-balance');
   }
