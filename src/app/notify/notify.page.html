@@ -15,8 +15,9 @@
   </div>
   <div class="wrapper-fluid">
     <div class="body-wrap body-have-bottom-menu">
+    
       <div class="notice-item"
-        *ngIf="authService?.currentUser?.send_verification == 0 && authService.currentUser.driver_verification == 0">
+        *ngIf="authService?.currentUser?.send_verification !== 1 && authService.currentUser.driver_verification !== 1">
         <div class="notice-wrap">
           <ion-button expand="full" (click)="goToVerification()">
             {{'Пройти верификацию' | translate}}

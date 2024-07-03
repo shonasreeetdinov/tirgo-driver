@@ -54,6 +54,7 @@ var NotifyPage = /** @class */ (function () {
     }
     NotifyPage.prototype.ngOnInit = function () {
         this.checkSession();
+        console.log(this.authService.currentUser);
     };
     NotifyPage.prototype.back = function () {
         this.navCtrl.back();

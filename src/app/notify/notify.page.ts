@@ -21,6 +21,8 @@ export class NotifyPage implements OnInit {
 
   ngOnInit() {
     this.checkSession()
+    console.log(this.authService.currentUser);
+    
   }
   back() {
     this.navCtrl.back()
