@@ -20,19 +20,8 @@ const config: CapacitorConfig = {
       splashImmersive: true,
       layoutName: "launch_screen",
       useDialog: true
-    },
-    FirebaseAnalytics: {
-      Android: {
-        collectEnabled: true
-      },
-      iOS: {
-        collectEnabled: true,
-        screenName: true
-      }
     }
-
   }
-
 };
 
 export default config;

@@ -38,9 +38,11 @@ export class FcmService {
     try {
       await this.addListeners();
       let permStatus = await PushNotifications.checkPermissions();
-
+      console.log(permStatus);
+      
       if (permStatus.receive === 'prompt') {
         permStatus = await PushNotifications.requestPermissions();
+
       }
 
       if (permStatus.receive !== 'granted') {
@@ -62,7 +64,11 @@ export class FcmService {
       'registration',
       async (token: Token) => {
         const fcm_token = token?.value;
-        this.authService.setFcmToken({userId: this.authService.currentUser.id, fcmToken: fcm_token}).subscribe((res:any) => {})
+        console.log('ttoookkenn', token.value);
+        
+        this.authService.setFcmToken({userId: this.authService.currentUser.id, fcmToken: fcm_token}).subscribe((res:any) => {
+         
+        })
         let go = 1;
         const saved_token = JSON.parse((await this.storageService.getStorage(FCM_TOKEN)).value);
         
