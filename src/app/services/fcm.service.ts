@@ -38,14 +38,14 @@ export class FcmService {
     try {
       await this.addListeners();
       let permStatus = await PushNotifications.checkPermissions();
-      console.log(permStatus);
+      console.log("permStatus =",permStatus.receive);
       
       if (permStatus.receive === 'prompt') {
         permStatus = await PushNotifications.requestPermissions();
-
       }
 
       if (permStatus.receive !== 'granted') {
+        permStatus = await PushNotifications.requestPermissions();
         throw new Error('User denied permissions!');
       }
       await PushNotifications.register();
@@ -64,14 +64,9 @@ export class FcmService {
       'registration',
       async (token: Token) => {
         const fcm_token = token?.value;
-        console.log('ttoookkenn', token.value);
-        
-        this.authService.setFcmToken({userId: this.authService.currentUser.id, fcmToken: fcm_token}).subscribe((res:any) => {
-         
-        })
+        this.authService.setFcmToken({userId: this.authService.currentUser.id, fcmToken: fcm_token}).subscribe((res:any) => {})
         let go = 1;
         const saved_token = JSON.parse((await this.storageService.getStorage(FCM_TOKEN)).value);
-        
         if (saved_token) {
           if (fcm_token === saved_token) {
             console.log('Same token');

@@ -18,7 +18,7 @@ export class ProfilePage implements OnInit {
 
   imageData: string = '';
   mask: string = '0000-0000-0000-0000';
-  file_url: string = 'https://admin.tirgo.io/file/';
+  file_url: string = 'https://admin.tirgo.io/file/tirgo/';
   name: string | undefined = '';
   phone: string | undefined = '';
   birthday = new Date().toISOString();

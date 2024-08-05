@@ -14,7 +14,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
 export class VerificationPage implements OnInit {
   alertButtons = ['Ok'];
   mask: string = '0000-0000-0000-0000';
-  file_url: string = 'https://admin.tirgo.io/file/';
+  file_url: string = 'https://admin.tirgo.io/file/tirgo/';
   prefix: string = '+998';
   phone: string = '';
   country_code: string = 'uz';

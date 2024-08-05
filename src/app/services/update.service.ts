@@ -1,55 +1,47 @@
 import { Injectable } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
-import { AppUpdate } from '@capawesome/capacitor-app-update';
-import { Browser } from '@capacitor/browser';
+import { App } from '@capacitor/app';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UpdateService {
-  constructor(private alertController: AlertController, private platform: Platform) {}
+export class VersionService {
+  private playStoreUrl = 'https://play.google.com/store/apps/details?id=io.tirgo.drive';
+  private appStoreUrl = 'https://apps.apple.com/uz/app/tirgo-driver/id6475301095';
 
-  async checkForUpdates() {
-    if (this.platform.is('capacitor')) {
-      try {
-        const updateInfo: any = await AppUpdate.getAppUpdateInfo();
+  constructor(
+    private alertController: AlertController,
+    private platform: Platform
+  ) { }
 
-        if (updateInfo.updateAvailability === 'UPDATE_AVAILABLE') {
-          this.showUpdateAlert();
-        }
-      } catch (error:any) {
-        console.error('Ошибка при проверке обновлений', error);
-      }
+  async checkForUpdates(latest) {
+    const currentVersion = await this.getCurrentAppVersion();
+    if(currentVersion != latest) {
+      this.showUpdateAlert();
     }
   }
-  async showUpdateAlert() {
+
+  private async getCurrentAppVersion(): Promise<string> {
+    const appInfo = await App.getInfo();
+    return appInfo.version;
+  }
+
+
+  private async showUpdateAlert() {
     const alert = await this.alertController.create({
-      header: 'Доступно обновление',
-      message: 'Доступна новая версия приложения. Пожалуйста, обновитесь для продолжения работы.',
+      header: 'Доступно новое обновление ',
+      message: 'Для продолжения работы необходимо обновить приложение',
       buttons: [
         {
           text: 'Обновить',
           handler: () => {
-            this.redirectToPlayStore();
+            const url = this.platform.is('android') ? this.playStoreUrl : this.appStoreUrl;
+            window.open(url, '_system');
           }
         }
       ],
       backdropDismiss: false
     });
     await alert.present();
-  }
-  async showDownloadFromPlayStoreAlert() {
-    const alert = await this.alertController.create({
-      header: 'Загрузите приложение из Play Store',
-      message: 'Для использования этой функции, пожалуйста, загрузите приложение из Play Store.',
-      buttons: ['OK'],
-      backdropDismiss: false
-    });
-
-    await alert.present();
-  }
-  async redirectToPlayStore() {
-    const appPackageName = 'io.tirgo.drive';
-    await Browser.open({ url: `https://play.google.com/store/apps/details?id=${appPackageName}` });
   }
 }

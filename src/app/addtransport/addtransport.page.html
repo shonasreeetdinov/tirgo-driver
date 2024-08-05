@@ -54,7 +54,7 @@
 
         <p><b>{{'Тех паспорт' | translate}}</b></p>
         <div class="file-uploads">
-          <div class="file-group"  *ngFor="let row of tech_passport_files" (click)="delFileTechTransport(row.preview.toString())">
+          <div class="file-group" *ngFor="let row of tech_passport_files" (click)="delFileTechTransport(row.preview.toString())">
             <div class="del-button">
               <ion-icon name="trash-bin-outline"></ion-icon>
             </div>

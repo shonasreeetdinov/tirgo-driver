@@ -9,7 +9,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
   styleUrls: ['./addtransport.page.scss'],
 })
 export class AddtransportPage implements OnInit {
-  file_url: string = 'https://admin.tirgo.io/file/';
+  file_url: string = 'https://admin.tirgo.io/file/tirgo/';
   type: number = 0;
   maxweight: number = 21000;
   name: string = '';
