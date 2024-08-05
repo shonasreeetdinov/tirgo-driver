@@ -55,14 +55,24 @@
           </div>
     <ng-container *ngIf="!codeon">
       <ion-item class="agroinput ion-no-margin ion-no-padding accept-text" lines="none">
-        <ion-checkbox slot="start" [(ngModel)]="policy"></ion-checkbox>
+        <!-- <ion-checkbox slot="start" [(ngModel)]="policy"></ion-checkbox> -->
+        <label class="custom-checkbox">
+          <input type="checkbox" [(ngModel)]="policy">
+          <span class="checkmark"></span>
+        </label>
         <ion-label>
           {{'Я принимаю' | translate}} <a href="https://tirgo.uz/privacy-policy/">{{'политику конфиденциальности' |
             translate}}</a>.
         </ion-label>
       </ion-item>
       <ion-item class="agroinput ion-no-margin ion-no-padding accept-text" lines="none">
-        <ion-checkbox slot="start" [(ngModel)]="offer"></ion-checkbox>
+        <!-- <ion-checkbox slot="start" [(ngModel)]="offer"></ion-checkbox> -->
+
+        <label class="custom-checkbox" >
+          <input type="checkbox" [(ngModel)]="offer">
+          <span class="checkmark"></span>
+        </label>
+        
         <ion-label>
           {{'Я принимаю' | translate}} <a href="https://tirgo.uz/public_offer.html">{{'публичную оферту' |
             translate}}</a>.

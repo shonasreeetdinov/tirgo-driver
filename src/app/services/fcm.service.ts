@@ -38,13 +38,14 @@ export class FcmService {
     try {
       await this.addListeners();
       let permStatus = await PushNotifications.checkPermissions();
-
+      console.log("permStatus =",permStatus.receive);
+      
       if (permStatus.receive === 'prompt') {
         permStatus = await PushNotifications.requestPermissions();
       }
 
       if (permStatus.receive !== 'granted') {
-        this.authService.alertLocation('Упс', 'Для получения заказов нам нужно знать вашу геопозицию. Пожалуйста включите разрешение на использование местоположения в приложении Tirgo Driver');
+        permStatus = await PushNotifications.requestPermissions();
         throw new Error('User denied permissions!');
       }
       await PushNotifications.register();

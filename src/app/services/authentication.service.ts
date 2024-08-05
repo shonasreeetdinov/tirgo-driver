@@ -665,7 +665,7 @@ export class AuthenticationService {
     });
   }
 
-  logout() {
+   logout() {
     this.authenticationState.next(false);
   }
 
@@ -833,5 +833,12 @@ export class AuthenticationService {
   }
   setFcmToken(data) {
     return this.http.post(API_URL + '/users/set-fcm-token', data)
+  }
+
+  updateActivity(user_id) {
+    return this.http.post(API_URL + '/users/update-activity', {user_id: user_id})
+  }
+  getAppVersion(appType) {
+    return this.http.get(API_URL + '/users/get-app-version?appType='+appType);
   }
 }

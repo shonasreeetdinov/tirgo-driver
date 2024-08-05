@@ -11,7 +11,7 @@ import { SocketService } from "./services/socket.service";
 import { Network } from "@capacitor/network";
 import axios from 'axios';
 import { FcmService } from './services/fcm.service';
-import { UpdateService } from './services/update.service';
+import { VersionService } from './services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +19,8 @@ import { UpdateService } from './services/update.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  appVersion: string;
+  platformType: string;
   connected: boolean = true;
   constructor(
     private platform: Platform,
@@ -30,7 +32,7 @@ export class AppComponent {
     public alertController: AlertController,
     private router: Router,
     private fcm: FcmService,
-    private updateService: UpdateService
+    private updateService: VersionService
   ) {
     this.router.navigate(['loading'])
     this.initializeApp();
@@ -59,11 +61,16 @@ export class AppComponent {
     this.authService.authenticationState.subscribe(async res => {
       if (res) {
         await this.checkSession();
+        this.getAppVersion();
+        this.updateActivity();
       }
       else {
         await this.router.navigate(['selectlanguage'], { replaceUrl: true });
       }
     })
+  }
+  updateActivity() {
+    this.authService.updateActivity(this.authService.currentUser.id).subscribe((res: any) => { })
   }
   async checkSession() {
     await this.authService.checkSession().toPromise().then(async (res) => {
@@ -87,38 +94,11 @@ export class AppComponent {
           this.authService.myarchiveorders = await this.authService.getMyArchiveOrders().toPromise();
           this.authService.currency = await this.authService.getCurrency().toPromise();
           this.authService.statuses = await this.authService.getStatuses().toPromise();
-          // this.authService.activeorder = await this.authService.getActiveOrder(this.authService.currentUser.id).toPromise();
-          
-          this.authService.myorders = await this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise();
-          // for (let row of this.authService.myorders) {
-          //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
-          //   if (index >= 0) {
-          //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
-          //       status_order: number | undefined;
-          //       id: number | undefined;
-          //     }) => user.id === this.authService.currentUser?.id && user.status_order === 1)
-          //     if (indexuser >= 0) {
-          //       this.authService.activeorder = this.authService.myorders[index];
-          //       this.authService.myorders.splice(index, 1)
-          //     }
-          //   }
-          // }
-          this.socketService.updateAllOrders().subscribe(async (res: any) => {
-            // this.authService.myorders = await this.authService.getMyOrders().toPromise();
 
-            // for (let row of this.authService.myorders) {
-            //   const index = this.authService.myorders.findIndex(e => e.id === row.id && row.status === 1)
-            //   if (index >= 0) {
-            //     const indexuser = this.authService.myorders[index].orders_accepted.findIndex((user: {
-            //       status_order: number | undefined;
-            //       user_id: number | undefined;
-            //     }) => user.user_id === this.authService.currentUser?.id && user.status_order === 1)
-            //     if (indexuser >= 0) {
-            //       this.authService.activeorder = this.authService.myorders[index];
-            //       this.authService.myorders.splice(index, 1)
-            //     }
-            //   }
-            // }
+          this.authService.myorders = await this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise();
+          this.socketService.updateAllOrders().subscribe(async (res: any) => {
+            this.authService.myorders = await this.authService.getMyOrders({ from: 0, limit: 50, transportType: '' }).toPromise();
+
             await this.checkSession();
           });
           this.authService.notifications = await this.authService.getNotification().toPromise();
@@ -127,14 +107,13 @@ export class AppComponent {
             this.authService.messages = await this.authService.getMessages().toPromise();
           })
           this.socketService.updateActiveOrder().subscribe(async (res: any) => {
+            console.log('SOOCKEEET');
             this.authService.getActiveOrder(this.authService.currentUser.id).subscribe((res: any) => {
               if (res) {
                 this.authService.activeorder = res.data.data;
               }
             })
           })
-          //this.authService.allordersfree = await this.authService.getAllOrdersFree().toPromise();
-          //this.authService.allmyordersprocessing = await this.authService.getAllMyOrdersProcessing().toPromise();
           await this.router.navigate(['/tabs/home'], { replaceUrl: true });
           Geolocation.getCurrentPosition().then(async (resp) => {
             this.authService.geolocationCheck = true;
@@ -165,7 +144,6 @@ export class AppComponent {
   async initializeApp() {
     if (this.platform.is('ios') || this.platform.is('android')) {
       this.platform.ready().then(() => {
-        this.updateService.checkForUpdates();
         // Network.getStatus().then(async (status) => {
         //   if (status.connected) {
         //     console.log('online');
@@ -199,6 +177,16 @@ export class AppComponent {
     } catch (error) {
       console.error('Error getting location:', error);
     }
+  }
+  getAppVersion() {
+    this.platform.is('android') ? this.platformType = 'driver-android' : this.platformType = 'driver-ios'; 
+    this.authService.getAppVersion(this.platformType).subscribe((res: any) => {
+      if (res && res.status) {
+        this.appVersion = res.data[0].number;
+        console.log(this.appVersion);
+        this.updateService.checkForUpdates(this.appVersion)
+      }
+    })
   }
 
 }

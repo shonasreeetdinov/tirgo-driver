@@ -21,14 +21,8 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen",
       useDialog: true
     },
-    FirebaseAnalytics: {
-      Android: {
-        collectEnabled: true
-      },
-      iOS: {
-        collectEnabled: true,
-        screenName: true
-      }
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert'],
     }
 
   }

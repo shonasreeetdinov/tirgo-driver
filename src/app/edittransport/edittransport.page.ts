@@ -10,7 +10,7 @@ import { FilePicker } from '@capawesome/capacitor-file-picker';
 })
 export class EdittransportPage implements OnInit {
   @Input('item') item: any;
-  file_url: string = 'https://admin.tirgo.io/file/';
+  file_url: string = 'https://admin.tirgo.io/file/tirgo/';
 
   type:number = 0;
   maxweight:number = 0;

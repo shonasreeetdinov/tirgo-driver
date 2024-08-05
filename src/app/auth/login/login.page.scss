@@ -1,21 +1,80 @@
-.agroinput{
+.agroinput {
   padding-left: 20px;
-  ion-label{
+
+  ion-label {
     color: white;
-    a{
+
+    a {
       color: white;
     }
   }
-  ion-checkbox{
+
+  ion-checkbox {
     --background: #262434;
   }
 }
-.resend-sms{
+
+.resend-sms {
   display: block;
   color: white;
   margin-top: 10px;
 }
+
 .agroinput ion-checkbox {
-  --background: white!important;
+  --background: white !important;
   --background-checked: #ed901e;
+}
+
+
+.custom-checkbox {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ed901e;
+  background-color: #262434;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.custom-checkbox input {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+}
+
+.custom-checkbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background-color: inherit;
+  transition: background-color 0.2s;
+}
+
+.custom-checkbox input:checked~.checkmark {
+  background-color: #ed901e;
+  border-color: transparent;
+}
+
+.custom-checkbox .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+.custom-checkbox input:checked~.checkmark:after {
+  display: block;
 }
