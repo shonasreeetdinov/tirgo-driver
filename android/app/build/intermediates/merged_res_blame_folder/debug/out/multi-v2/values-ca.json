@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "io.tirgo.drive.app-mergeDebugResources-41:/values-ca/values-ca.xml",
+            "outputFile": "io.tirgo.drive.app-mergeDebugResources-38:/values-ca/values-ca.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\769ee140ba17d163ce8356baf4261960\\transformed\\browser-1.7.0\\res\\values-ca\\values-ca.xml",

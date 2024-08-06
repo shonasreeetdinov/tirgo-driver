@@ -1,11 +1,7 @@
 [
 	{
-		"pkg": "@capacitor-community/firebase-analytics",
-		"classpath": "com.getcapacitor.community.firebaseanalytics.FirebaseAnalytics"
-	},
-	{
-		"pkg": "@capacitor-firebase/analytics",
-		"classpath": "io.capawesome.capacitorjs.plugins.firebase.analytics.FirebaseAnalyticsPlugin"
+		"pkg": "@capacitor-community/app-icon",
+		"classpath": "com.mycompany.plugins.example.AppIconPlugin"
 	},
 	{
 		"pkg": "@capacitor/app",

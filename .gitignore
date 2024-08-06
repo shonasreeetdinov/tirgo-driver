@@ -5,7 +5,6 @@
 /tmp
 /out-tsc
 /bazel-out
-www
 # Node
 /node_modules
 npm-debug.log
@@ -40,3 +39,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+www
+android
+ios

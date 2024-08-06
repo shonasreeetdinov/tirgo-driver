@@ -1,3 +1,0 @@
-io.tirgo.drive.test
-style WhiteBackgroundDialogTheme
-style WhiteBackgroundTheme
