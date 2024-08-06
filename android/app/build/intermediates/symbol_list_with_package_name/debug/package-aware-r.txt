@@ -3693,6 +3693,7 @@ layout select_dialog_singlechoice_material
 layout splash_screen_view
 layout support_simple_spinner_dropdown_item
 mipmap ic_launcher
+mipmap ic_launcher_background
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
 plurals mtrl_badge_content_description
@@ -5177,5 +5178,4 @@ styleable ViewStubCompat android_id android_layout android_inflatedId
 styleable bridge_fragment start_dir
 xml config
 xml file_paths
-xml ga_ad_services_config
 xml image_share_filepaths
